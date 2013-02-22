@@ -204,11 +204,12 @@
 	"xml.h"
 	"log.h"
 
-1361562313 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
+1361563783 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
 	<GL3/gl3w.h>
 	<list>
 	"log.h"
 	"osabs.h"
+	"gamepad.h"
 	"text.h"
 	"vector.h"
 	"matrix.h"
@@ -237,9 +238,15 @@
 1361547217 source:c:\devprojects\gitdiesel\silkworm\xml.cpp
 	"xml.h"
 
-1361561321 source:c:\devprojects\gitdiesel\silkworm\druidentity.cpp
+1361562705 source:c:\devprojects\gitdiesel\silkworm\druidentity.cpp
 	"entity.h"
 
-1361561327 source:c:\devprojects\gitdiesel\silkworm\standardphysicsentity.cpp
+1361562650 source:c:\devprojects\gitdiesel\silkworm\standardphysicsentity.cpp
 	"entity.h"
+
+1361563430 source:c:\devprojects\gitdiesel\silkworm\gamepad.cpp
+	<windows.h>
+	"gamepad.h"
+
+1361563396 c:\devprojects\gitdiesel\silkworm\gamepad.h
 

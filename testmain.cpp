@@ -4,6 +4,7 @@
 
 #include "log.h"
 #include "osabs.h"
+#include "gamepad.h"
 #include "text.h"
 
 #include "vector.h"
@@ -203,6 +204,8 @@ int renderloop()
 	glGetIntegerv(GL_MINOR_VERSION, &glmin);    // 4.1 would be 4 in glmaj and 1 in glmin
 
 
+    gamepad_create();                           // gamepad support!! :)
+
     Text::init();                               // initialize the simple text renderer
 
 
@@ -348,12 +351,28 @@ int renderloop()
         {
             // game mode
 
+            // query the gamepad and mix data with keyboard input
+
+            gamepad gg;
+            gamepad_query(gg);
+
+            int ggkeystatearray[16];
+
+            memcpy(ggkeystatearray,keystatearray,16*4);
+
+            ggkeystatearray[0]|=gg.x<-0.1f;
+            ggkeystatearray[1]|=gg.x>0.1f;
+            ggkeystatearray[2]|=gg.y<-0.1f;
+            ggkeystatearray[3]|=gg.y>0.1f;
+            ggkeystatearray[6]|=gg.b[0];
+            ggkeystatearray[11]|=gg.b[1];
+
             // move the druid around
 
             testdruid.step();                                      // physics
-            testdruid.control(keystatearray,lastkeystatearray);    // player control
+            testdruid.control(ggkeystatearray,lastkeystatearray);    // player control
 
-            memcpy(lastkeystatearray,keystatearray,16*4);
+            memcpy(lastkeystatearray,ggkeystatearray,16*4);
 
             // display the druid's bounding box
 
