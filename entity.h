@@ -102,8 +102,7 @@ class StandardPhysicsEntity : public Entity
 
 enum DruidState { DRUID, SPIDER, BIRD };
 
-enum DruidPrimaryActionState { STANDING, RUNNING, SPEEDING, DUCKINGDOWN, COVERING, STANDINGUP, JUMPING, FALLING,
-                                 CLIMBINGLEFT, CLIMBINGRIGHT, CLIMBINGBACK, CLIMBINGFRONT };
+enum DruidPrimaryActionState { STANDING, RUNNING, SPEEDING, DUCKINGDOWN, COVERING, STANDINGUP, JUMPING, FALLING, CLIMBING };
 
 enum DruidSecondaryActionState { IDLE, FIRING, MELEE, TRANSFORMING };
 
@@ -117,6 +116,7 @@ class DruidEntity : public StandardPhysicsEntity
     DruidSecondaryActionState druidSecondaryActionState;
 
     int actionDuration;
+    int actionDirection;
 
     Vector intendedDirection;               // not actual Movement, but where the player wants to go
 
@@ -243,34 +243,18 @@ class DruidEntity : public StandardPhysicsEntity
 
             acc+=intendedDirection*0.1*0.08f;
 
-            if (keyStates[0] && (collisionState&64))
+            for(i=0;i<4;i++)
+
+            if (keyStates[i] && (collisionState&(64<<i)))
             {
-                druidPrimaryActionState = CLIMBINGLEFT;
+                druidPrimaryActionState = CLIMBING;
+                actionDirection = i;
                 movementState = FIX;
                 actionDuration = 10;
                 vel=Vector(0.0f,0.0f,0.0f);
+                pos.e[1]=(float)((int)(pos.e[1]*0.5f)*2)+1.4f-bba.e[1];
             }
-            if (keyStates[1] && (collisionState&128))
-            {
-                druidPrimaryActionState = CLIMBINGRIGHT;
-                movementState = FIX;
-                actionDuration = 10;
-                vel=Vector(0.0f,0.0f,0.0f);
-            }
-            if (keyStates[2] && (collisionState&256))
-            {
-                druidPrimaryActionState = CLIMBINGBACK;
-                movementState = FIX;
-                actionDuration = 10;
-                vel=Vector(0.0f,0.0f,0.0f);
-            }
-            if (keyStates[3] && (collisionState&512))
-            {
-                druidPrimaryActionState = CLIMBINGFRONT;
-                movementState = FIX;
-                actionDuration = 10;
-                vel=Vector(0.0f,0.0f,0.0f);
-            }
+
 
             break;
         }
@@ -375,38 +359,19 @@ class DruidEntity : public StandardPhysicsEntity
             druidPrimaryActionState=STANDING;
         }
 
-        if (druidPrimaryActionState==CLIMBINGLEFT&&actionDuration==0)
+        if (druidPrimaryActionState==CLIMBING&&actionDuration==0)
         {
             druidPrimaryActionState=STANDING;
             movementState=FLOOR;
-            pos.e[0]=(float)((int)pos.e[0]);
-            pos.e[1]=(float)((int)(pos.e[1]*0.5f)*2+2)-bba.e[1];
+            switch(actionDirection)
+            {
+                case 0: pos.e[0]=(float)((int)pos.e[0]); break;
+                case 1: pos.e[0]=(float)((int)pos.e[0]+1); break;
+                case 2: pos.e[2]=(float)((int)pos.e[2]); break;
+                case 3: pos.e[2]=(float)((int)pos.e[2]+1); break;
+            }
+            pos.e[1]=(float)((int)(pos.e[1]*0.5f)*2)-bba.e[1];
         }
-
-        if (druidPrimaryActionState==CLIMBINGRIGHT&&actionDuration==0)
-        {
-            druidPrimaryActionState=STANDING;
-            movementState=FLOOR;
-            pos.e[0]=(float)((int)pos.e[0]+1);
-            pos.e[1]=(float)((int)(pos.e[1]*0.5f)*2+2)-bba.e[1];
-        }
-
-        if (druidPrimaryActionState==CLIMBINGBACK&&actionDuration==0)
-        {
-            druidPrimaryActionState=STANDING;
-            movementState=FLOOR;
-            pos.e[2]=(float)((int)pos.e[2]);
-            pos.e[1]=(float)((int)(pos.e[1]*0.5f)*2+2)-bba.e[1];
-        }
-
-        if (druidPrimaryActionState==CLIMBINGFRONT&&actionDuration==0)
-        {
-            druidPrimaryActionState=STANDING;
-            movementState=FLOOR;
-            pos.e[2]=(float)((int)pos.e[2]+1);
-            pos.e[1]=(float)((int)(pos.e[1]*0.5f)*2+2)-bba.e[1];
-        }
-
 
 
     }
