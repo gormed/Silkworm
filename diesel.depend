@@ -121,3 +121,117 @@
 1361553560 c:\devprojects\diesel\entity.h
 	"vector.h"
 
+1361489429 source:c:\devprojects\gitdiesel\silkworm\array.cpp
+	<GL3/gl3w.h>
+	"array.h"
+
+1361489430 c:\devprojects\gitdiesel\silkworm\array.h
+	"resource.h"
+	"state.h"
+
+1361489430 c:\devprojects\gitdiesel\silkworm\resource.h
+	<map>
+	<string>
+	"file.h"
+
+1361496691 c:\devprojects\gitdiesel\silkworm\file.h
+	<stdio.h>
+
+1361498470 c:\devprojects\gitdiesel\silkworm\state.h
+	<GL3/gl3w.h>
+	"resource.h"
+
+1361489430 source:c:\devprojects\gitdiesel\silkworm\collada.cpp
+	<sstream>
+	"xml.h"
+	"collada.h"
+
+1361489721 c:\devprojects\gitdiesel\silkworm\xml.h
+	<map>
+	<string>
+	"file.h"
+
+1361493246 c:\devprojects\gitdiesel\silkworm\collada.h
+	"xml.h"
+	"array.h"
+	"state.h"
+
+1361314586 source:c:\devprojects\gitdiesel\silkworm\entity.cpp
+
+1329255250 source:c:\devprojects\gitdiesel\silkworm\gl3w.c
+	<GL3/gl3w.h>
+	<windows.h>
+	<Carbon/Carbon.h>
+	<dlfcn.h>
+	<GL/glx.h>
+
+1361547612 source:c:\devprojects\gitdiesel\silkworm\image.cpp
+	<GL3/gl3w.h>
+	"log.h"
+	"image.h"
+	<vector>
+
+1361489430 c:\devprojects\gitdiesel\silkworm\log.h
+	<iostream>
+	<fstream>
+
+1361489430 c:\devprojects\gitdiesel\silkworm\image.h
+	"resource.h"
+
+1361489430 source:c:\devprojects\gitdiesel\silkworm\log.cpp
+	<stdio.h>
+	<string.h>
+	"log.h"
+
+1361557703 source:c:\devprojects\gitdiesel\silkworm\osabs.cpp
+	<GL3/gl3w.h>
+	"project.h"
+	"osabs.h"
+	"log.h"
+
+1361376730 c:\devprojects\gitdiesel\silkworm\project.h
+
+1361557721 c:\devprojects\gitdiesel\silkworm\osabs.h
+
+1361492521 source:c:\devprojects\gitdiesel\silkworm\state.cpp
+	<GL3/gl3w.h>
+	<exception>
+	<sstream>
+	<iostream>
+	"state.h"
+	"xml.h"
+	"log.h"
+
+1361558699 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
+	<GL3/gl3w.h>
+	<list>
+	"log.h"
+	"osabs.h"
+	"text.h"
+	"vector.h"
+	"matrix.h"
+	"image.h"
+	"collada.h"
+	"entity.h"
+
+1361491155 c:\devprojects\gitdiesel\silkworm\text.h
+
+1361545013 c:\devprojects\gitdiesel\silkworm\vector.h
+	<math.h>
+
+1361540263 c:\devprojects\gitdiesel\silkworm\matrix.h
+	<math.h>
+	"vector.h"
+
+1361559480 c:\devprojects\gitdiesel\silkworm\entity.h
+	"vector.h"
+
+1361492327 source:c:\devprojects\gitdiesel\silkworm\text.cpp
+	<GL3/gl3w.h>
+	"state.h"
+	"array.h"
+	"text.h"
+
+1361547217 source:c:\devprojects\gitdiesel\silkworm\xml.cpp
+	"xml.h"
+

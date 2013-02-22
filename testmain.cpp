@@ -40,7 +40,13 @@ GameState gamestate = EDITOR;
     "hit [enter] to leave play mode                                  ";
 
 
+int windowwidth=1024,windowheight=768;
 
+void windowsize(int w, int h)
+{
+    windowwidth=w;
+    windowheight=h;
+}
 
 #define LEVELWIDTH 32
 #define LEVELHEIGHT 32
@@ -120,7 +126,6 @@ int collide(Entity *e)
         || collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bbb.e[1]+colEps,e->bbb.e[2]-colEps))
         || collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bbb.e[1]+colEps,e->bbb.e[2]-colEps))  ) cflag|=8;
 
-
     if (   collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bba.e[1]+colEps,e->bba.e[2]-colEps))
         || collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bba.e[1]+colEps,e->bba.e[2]-colEps))
         || collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bbb.e[1]-colEps,e->bba.e[2]-colEps))
@@ -130,6 +135,29 @@ int collide(Entity *e)
         || collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bba.e[1]+colEps,e->bbb.e[2]+colEps))
         || collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bbb.e[1]-colEps,e->bbb.e[2]+colEps))
         || collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bbb.e[1]-colEps,e->bbb.e[2]+colEps))  ) cflag|=32;
+
+
+    // detect wether climbing an edge is possible
+
+    if (  (collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bba.e[1]-colEps,e->bba.e[2]+colEps))
+        || collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bba.e[1]-colEps,e->bbb.e[2]-colEps)))
+        &&!collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bbb.e[1]+colEps,e->bba.e[2]+colEps))
+        &&!collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bbb.e[1]+colEps,e->bbb.e[2]-colEps))  ) cflag|=64;
+
+    if (  (collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bba.e[1]-colEps,e->bba.e[2]+colEps))
+        || collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bba.e[1]-colEps,e->bbb.e[2]-colEps)))
+        &&!collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bbb.e[1]+colEps,e->bba.e[2]+colEps))
+        &&!collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bbb.e[1]+colEps,e->bbb.e[2]-colEps))  ) cflag|=128;
+
+    if (  (collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bba.e[1]-colEps,e->bba.e[2]-colEps))
+        || collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bba.e[1]-colEps,e->bba.e[2]-colEps)))
+        &&!collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bbb.e[1]+colEps,e->bba.e[2]-colEps))
+        &&!collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bbb.e[1]+colEps,e->bba.e[2]-colEps))  ) cflag|=256;
+
+    if (  (collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bba.e[1]-colEps,e->bbb.e[2]+colEps))
+        || collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bba.e[1]-colEps,e->bbb.e[2]+colEps)))
+        &&!collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bbb.e[1]+colEps,e->bbb.e[2]+colEps))
+        &&!collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bbb.e[1]+colEps,e->bbb.e[2]+colEps))  ) cflag|=512;
 
 
    return cflag;
@@ -288,7 +316,7 @@ int renderloop()
 
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);   // clear screen
 
-        glViewport(0,0,1024,768);   // !!do something about the hard coded values here
+        glViewport(0,0,windowwidth,windowheight);
 
 
         // set the state for rendering the level

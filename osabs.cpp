@@ -211,7 +211,7 @@ LRESULT CALLBACK windowproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             return 0;
 
         case WM_SIZE:
-            //windowsize(LOWORD(lParam),HIWORD(lParam));
+            windowsize(LOWORD(lParam),HIWORD(lParam));
             break;
 
         case WM_CHAR:

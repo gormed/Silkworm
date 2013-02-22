@@ -103,7 +103,7 @@ class StandardPhysicsEntity : public Entity
 enum DruidState { DRUID, SPIDER, BIRD };
 
 enum DruidPrimaryActionState { STANDING, RUNNING, SPEEDING, DUCKINGDOWN, COVERING, STANDINGUP, JUMPING, FALLING,
-                                 PULLINGUPLEFT, PULLINGUPRIGHT, PULLINGUPBACK, PULLINGUPFRONT };
+                                 CLIMBINGLEFT, CLIMBINGRIGHT, CLIMBINGBACK, CLIMBINGFRONT };
 
 enum DruidSecondaryActionState { IDLE, FIRING, MELEE, TRANSFORMING };
 
@@ -243,10 +243,34 @@ class DruidEntity : public StandardPhysicsEntity
 
             acc+=intendedDirection*0.1*0.08f;
 
-            if (keyStates[0] && (collisionState&64))  druidPrimaryActionState = PULLINGUPLEFT;
-            if (keyStates[1] && (collisionState&128))  druidPrimaryActionState = PULLINGUPRIGHT;
-            if (keyStates[2] && (collisionState&256))  druidPrimaryActionState = PULLINGUPBACK;
-            if (keyStates[3] && (collisionState&512))  druidPrimaryActionState = PULLINGUPFRONT;
+            if (keyStates[0] && (collisionState&64))
+            {
+                druidPrimaryActionState = CLIMBINGLEFT;
+                movementState = FIX;
+                actionDuration = 10;
+                vel=Vector(0.0f,0.0f,0.0f);
+            }
+            if (keyStates[1] && (collisionState&128))
+            {
+                druidPrimaryActionState = CLIMBINGRIGHT;
+                movementState = FIX;
+                actionDuration = 10;
+                vel=Vector(0.0f,0.0f,0.0f);
+            }
+            if (keyStates[2] && (collisionState&256))
+            {
+                druidPrimaryActionState = CLIMBINGBACK;
+                movementState = FIX;
+                actionDuration = 10;
+                vel=Vector(0.0f,0.0f,0.0f);
+            }
+            if (keyStates[3] && (collisionState&512))
+            {
+                druidPrimaryActionState = CLIMBINGFRONT;
+                movementState = FIX;
+                actionDuration = 10;
+                vel=Vector(0.0f,0.0f,0.0f);
+            }
 
             break;
         }
@@ -263,7 +287,7 @@ class DruidEntity : public StandardPhysicsEntity
             }
 
             else if (  druidPrimaryActionState==RUNNING || druidPrimaryActionState==STANDING
-                ||druidPrimaryActionState==SPEEDING || druidPrimaryActionState==COVERING)
+                    || druidPrimaryActionState==SPEEDING || druidPrimaryActionState==COVERING)
             {
                 movementState=FREEFALL;
                 druidPrimaryActionState=FALLING;
@@ -351,6 +375,37 @@ class DruidEntity : public StandardPhysicsEntity
             druidPrimaryActionState=STANDING;
         }
 
+        if (druidPrimaryActionState==CLIMBINGLEFT&&actionDuration==0)
+        {
+            druidPrimaryActionState=STANDING;
+            movementState=FLOOR;
+            pos.e[0]=(float)((int)pos.e[0]);
+            pos.e[1]=(float)((int)(pos.e[1]*0.5f)*2+2)-bba.e[1];
+        }
+
+        if (druidPrimaryActionState==CLIMBINGRIGHT&&actionDuration==0)
+        {
+            druidPrimaryActionState=STANDING;
+            movementState=FLOOR;
+            pos.e[0]=(float)((int)pos.e[0]+1);
+            pos.e[1]=(float)((int)(pos.e[1]*0.5f)*2+2)-bba.e[1];
+        }
+
+        if (druidPrimaryActionState==CLIMBINGBACK&&actionDuration==0)
+        {
+            druidPrimaryActionState=STANDING;
+            movementState=FLOOR;
+            pos.e[2]=(float)((int)pos.e[2]);
+            pos.e[1]=(float)((int)(pos.e[1]*0.5f)*2+2)-bba.e[1];
+        }
+
+        if (druidPrimaryActionState==CLIMBINGFRONT&&actionDuration==0)
+        {
+            druidPrimaryActionState=STANDING;
+            movementState=FLOOR;
+            pos.e[2]=(float)((int)pos.e[2]+1);
+            pos.e[1]=(float)((int)(pos.e[1]*0.5f)*2+2)-bba.e[1];
+        }
 
 
 

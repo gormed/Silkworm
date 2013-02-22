@@ -15,6 +15,7 @@ int kill_context();
 int renderloop();
 int keydown(int keycode);
 int mousemove(int x, int y);
+void windowsize(int w, int h);
 
 #endif
 
