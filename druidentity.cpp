@@ -53,6 +53,17 @@ void DruidEntity::collisionResponse()
 
     case DRUID:
 
+        // when a wall is hit, get out of run mode
+
+        if ( (collisionState & (1|2|16|32) ) && movementState==FLOOR)
+        {
+            int t=collisionState;
+            if (druidPrimaryActionState==SPEEDING||druidPrimaryActionState==RUNNING)
+                druidPrimaryActionState=STANDING;
+        }
+
+        // when falling to the floor, land
+
         if( (collisionState & COLLISION_BOTTOM) &&  movementState==FREEFALL)
         {
             movementState = FLOOR;
@@ -60,6 +71,9 @@ void DruidEntity::collisionResponse()
 
             //druidPrimaryActionState = COVERING;
         }
+
+        // when walking of an edge, begin to fall
+
         else if (!(collisionState & COLLISION_BOTTOM) && movementState==FLOOR)
         {
             movementState = FREEFALL;
@@ -101,7 +115,16 @@ void DruidEntity::control(int *keyStates, int *lastKeyStates)
 
             if (vel.dot(vel) <= 0.1f*0.1f) acc+=intendedDirection;  // only go so fast
 
-            druidPrimaryActionState = RUNNING;
+            if (druidPrimaryActionState != RUNNING)
+            {
+                actionDuration = 30; // hold to run
+                druidPrimaryActionState = RUNNING;
+            }
+            else if (actionDuration==0)
+            {
+                druidPrimaryActionState=SPEEDING;
+            }
+
         }
         else
         {
@@ -118,6 +141,10 @@ void DruidEntity::control(int *keyStates, int *lastKeyStates)
             intendedDirection*=0.08f;
 
             if (vel.dot(vel) <= 0.2f*0.2f) acc+=intendedDirection;
+        }
+        else
+        {
+            druidPrimaryActionState = STANDING;
         }
 
         break;

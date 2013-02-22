@@ -1,10 +1,12 @@
-Ich weiss es ist noch nicht viel,
 
-man kann mit pfeiltasten laufen,
-leertaste springen (auch walljump :)
-C ducken.
+silkworm gameplay prototype
 
-mit ENTER kann man den Leveleditor aktivieren...
+rumlaufen				a,w,s,d / gamepad analogstick l
+springen				leertaste / gamepad taste 1
+ducken					c / gamepad taste 2
 
+an kante hochziehen		springen gegen eine kante und richtungstaste in richtung der kante 
+walljump				neben einer wand sprungtaste drücken
+schnell laufen			richtungstaste gedrückt halten
 
 

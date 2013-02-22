@@ -49,7 +49,7 @@ void StandardPhysicsEntity::step()
         if (movementState == FREEFALL)
         {
             acc.e[1] = -0.025f; // gravity accelerates!
-            vel *= 0.95f;       // friction is low in air
+            vel *= 0.98f;       // friction is low in air
         }
         else
         {
@@ -57,6 +57,8 @@ void StandardPhysicsEntity::step()
             if (vel.dot(vel)<=0.05f*0.05f) vel = Vector(0.0f,0.0f,0.0f);    // friction stops
         }
     }
+
+    collisionState=collide(this);
 
     collisionResponse();
 }

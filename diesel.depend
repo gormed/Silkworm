@@ -238,10 +238,10 @@
 1361547217 source:c:\devprojects\gitdiesel\silkworm\xml.cpp
 	"xml.h"
 
-1361562705 source:c:\devprojects\gitdiesel\silkworm\druidentity.cpp
+1361565860 source:c:\devprojects\gitdiesel\silkworm\druidentity.cpp
 	"entity.h"
 
-1361562650 source:c:\devprojects\gitdiesel\silkworm\standardphysicsentity.cpp
+1361566027 source:c:\devprojects\gitdiesel\silkworm\standardphysicsentity.cpp
 	"entity.h"
 
 1361563430 source:c:\devprojects\gitdiesel\silkworm\gamepad.cpp
