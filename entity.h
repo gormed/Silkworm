@@ -252,7 +252,7 @@ class DruidEntity : public StandardPhysicsEntity
                 movementState = FIX;
                 actionDuration = 10;
                 vel=Vector(0.0f,0.0f,0.0f);
-                pos.e[1]=(float)((int)(pos.e[1]*0.5f)*2)+1.4f-bba.e[1];
+                pos.e[1]=(float)((int)( (pos.e[1]+bba.e[1])*0.5f)*2+2);
             }
 
 
