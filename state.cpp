@@ -223,3 +223,16 @@ int State::getUniformLocation(int i) const
     return uniformlocation[i];
 }
 
+void State::uniformMatrix(const char *name, const Matrix &m) const
+{
+    for(int i=0;i<uniformcount;i++) if (_stricmp(uniformname[i],name)==0)
+    {
+        glUniformMatrix4fv(uniformlocation[i], 1, false, m.e);
+        break;
+    }
+}
+
+void State::uniformMatrix(const int location, const Matrix &m) const
+{
+    glUniformMatrix4fv(uniformlocation[location], 1, false, m.e);
+}

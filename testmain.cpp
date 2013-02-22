@@ -103,6 +103,8 @@ int collide(Entity *e)
    // - movement speed is not > colEps
    // - neither of the bounding box's side legnths are < 2 * colEps
 
+   // this code is fucking ugly and needs to be simplified
+
 
    // add epsilon to account for contact-collision
 
@@ -165,8 +167,6 @@ int collide(Entity *e)
 
 void initgame()
 {
-    int i;
-
     // build the levels collision data
     // !! this is flawed
 
@@ -209,8 +209,6 @@ int renderloop()
 
     // load the image resources defined in imageresources.xml
 
-    typedef std::map<std::string, Image> ImageMap;
-
     ImageMap imagemap;
 
     File imageresourcesfile = File::read("data/imageresources.xml");
@@ -230,6 +228,8 @@ int renderloop()
         imagemap[(np->second)["name"]]=img;
     }
 
+    // initialise an opengl render state defined in simplestate.xml
+
 	State *teststate = new State();
 
 	File statefile = File::read("states/simplestate.xml");
@@ -237,8 +237,7 @@ int renderloop()
 	teststate->read( statefile );
 	teststate->link();
 
-
-    // load the models from the tilset.dae collada file
+    // load the models from the tileset.dae collada file
 
 	File colladafile = File::read("models/tileset.dae");
 
@@ -246,15 +245,6 @@ int renderloop()
 
 	collada->state = teststate;
 	collada->read( colladafile );
-
-
-    GeometryMap::iterator p;
-
-    for (p=collada->geometries.begin();p!=collada->geometries.end();++p)
-    {
-        Log::log() << (p->first) << "<br>";
-    }
-
 
     // initialize the cursor
 
@@ -267,15 +257,17 @@ int renderloop()
 	Matrix modelviewMatrix = Matrix::identity();
 	Matrix cameraMatrix = Matrix::identity();
 
-
+    // load level from level.txt
 
     loadlevel();
+
+    // create the level collision data and reset the player character
 
     initgame();
 
 
     while (!quit)
-    if (!system_hook(&quit))
+    if (!system_hook(&quit))    // quit will become true if the os wants the application to be closed
     {
         int i;
 
@@ -325,9 +317,9 @@ int renderloop()
 
 
         // load the projection matrix
-        // !!probably the State class should have a member method to do this kind of work...
 
-        glUniformMatrix4fv(teststate->getUniformLocation(0), 1, false, projectionMatrix.e);
+        teststate->uniformMatrix("projection",projectionMatrix);
+
 
 
         if (gamestate==EDITOR)
@@ -340,23 +332,17 @@ int renderloop()
                             * Matrix::rotation(1, editorcursor.ipRotation)
                             * Matrix::rotation(0, PI*1.5f);
 
-            glUniformMatrix4fv(teststate->getUniformLocation(1), 1, false, modelviewMatrix.e);
+            teststate->uniformMatrix("modelview",modelviewMatrix);
 
             imagemap["Material_001"].use(0);
             collada->geometries["selectbox"].meshes[0].array.draw();
 
 
-            // display the tile that can be painted
-            // in the case of multiple materials used in one tile, the geometry is divided into one mesh per material
-            // iterate through the meshes and render each
-            // !!probably the Geometry class should have a member method to do this...
 
-            MeshMap::iterator mp;
-            for(mp=(editorcursor.tileused->second).meshes.begin();mp!=(editorcursor.tileused->second).meshes.end();++mp)
-            {
-                imagemap[(mp->second).material].use(0);
-                (mp->second).array.draw();
-            }
+            // display the tile that can be painted
+
+            (editorcursor.tileused->second).draw(imagemap);
+
         }
         else
         {
@@ -375,7 +361,7 @@ int renderloop()
                             * Matrix::scale((testdruid.bbb-testdruid.bba)*0.5f)
                             * Matrix::rotation(0, PI*1.5f);
 
-            glUniformMatrix4fv(teststate->getUniformLocation(1), 1, false, modelviewMatrix.e);
+            teststate->uniformMatrix("modelview",modelviewMatrix);
 
             imagemap["Material_001"].use(0);
             collada->geometries["selectbox"].meshes[0].array.draw();
@@ -398,16 +384,12 @@ int renderloop()
                                 * Matrix::rotation(1, (float)li->rotation*(PI*0.5f))
                                 * Matrix::rotation(0, PI*1.5f);
 
-                glUniformMatrix4fv(teststate->getUniformLocation(1), 1, false, modelviewMatrix.e);
+                teststate->uniformMatrix("modelview",modelviewMatrix);
 
                 Geometry &g = collada->geometries[li->name];
-                MeshMap::iterator mp;
 
-                for(mp=g.meshes.begin();mp!=g.meshes.end();++mp)
-                {
-                    imagemap[(mp->second).material].use(0);
-                    (mp->second).array.draw();
-                }
+                g.draw(imagemap);
+
             }
         }
 
@@ -507,7 +489,7 @@ int keydown(int keycode)
     {
 
 
-        int keycodes[16] = { VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN,
+        int keycodes[16] = { 'A', 'D', 'W', 'S',
                              0, 0,
                              ' ', VK_CONTROL, 'X', VK_SHIFT, VK_LMENU /* alt key */, 'C',
                              0, 0, 0, 0 };
@@ -560,7 +542,7 @@ const char *console()
 }
 
 
-// save and load the level
+// save the level
 
 void savelevel()
 {
@@ -583,6 +565,8 @@ void savelevel()
 
     f.close();
 }
+
+// reload the level
 
 void loadlevel()
 {

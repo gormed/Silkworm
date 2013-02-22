@@ -13,6 +13,7 @@
 #include <GL3/gl3w.h>
 
 #include "resource.h"
+#include "matrix.h"
 
 static const int shaderglmap[] = { GL_VERTEX_SHADER,
                                GL_TESS_CONTROL_SHADER,
@@ -92,6 +93,9 @@ class State : Resource
     int getLength (int i) const;
 
     int getUniformLocation (int i) const;
+
+    void uniformMatrix (const char *uniformname, const Matrix &m) const;
+    void uniformMatrix (const int location, const Matrix &m) const;
 
     void set () const;
 

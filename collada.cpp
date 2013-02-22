@@ -313,3 +313,14 @@ void Collada::readGeometry(XML &geoxml)
     this->geometries[geoxml["name"]]=geometry;
 
 }
+
+void Geometry::draw(ImageMap &materials)
+{
+    MeshMap::iterator mp;
+
+    for(mp=meshes.begin();mp!=meshes.end();++mp)
+    {
+        materials[(mp->second).material].use(0);
+        (mp->second).array.draw();
+    }
+}

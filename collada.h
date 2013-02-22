@@ -14,13 +14,14 @@
 #include "xml.h"
 #include "array.h"
 #include "state.h"
+#include "image.h"
 
 struct Geometry;
 struct Mesh;
 
 typedef std::map<std::string, Geometry> GeometryMap;
 typedef std::map<int, Mesh> MeshMap;
-
+typedef std::map<std::string, Image> ImageMap;
 
 
 // a Collada object loads all the geometry info from a Collada file
@@ -56,8 +57,10 @@ public:
 
 };
 
-struct Geometry
+class Geometry
 {
+public:
+
     // if a geometry object consists of multiple polylist,
     // leave them seperate.
 
@@ -66,6 +69,8 @@ struct Geometry
     // seperate vertex arrays is a good idea.
 
     MeshMap meshes;
+
+    void draw(ImageMap &materials);
 };
 
 struct Mesh

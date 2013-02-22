@@ -137,11 +137,12 @@
 1361496691 c:\devprojects\gitdiesel\silkworm\file.h
 	<stdio.h>
 
-1361498470 c:\devprojects\gitdiesel\silkworm\state.h
+1361561737 c:\devprojects\gitdiesel\silkworm\state.h
 	<GL3/gl3w.h>
 	"resource.h"
+	"matrix.h"
 
-1361489430 source:c:\devprojects\gitdiesel\silkworm\collada.cpp
+1361561310 source:c:\devprojects\gitdiesel\silkworm\collada.cpp
 	<sstream>
 	"xml.h"
 	"collada.h"
@@ -151,10 +152,11 @@
 	<string>
 	"file.h"
 
-1361493246 c:\devprojects\gitdiesel\silkworm\collada.h
+1361561302 c:\devprojects\gitdiesel\silkworm\collada.h
 	"xml.h"
 	"array.h"
 	"state.h"
+	"image.h"
 
 1361314586 source:c:\devprojects\gitdiesel\silkworm\entity.cpp
 
@@ -193,7 +195,7 @@
 
 1361557721 c:\devprojects\gitdiesel\silkworm\osabs.h
 
-1361492521 source:c:\devprojects\gitdiesel\silkworm\state.cpp
+1361561737 source:c:\devprojects\gitdiesel\silkworm\state.cpp
 	<GL3/gl3w.h>
 	<exception>
 	<sstream>
@@ -202,7 +204,7 @@
 	"xml.h"
 	"log.h"
 
-1361558699 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
+1361562313 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
 	<GL3/gl3w.h>
 	<list>
 	"log.h"
@@ -223,7 +225,7 @@
 	<math.h>
 	"vector.h"
 
-1361560200 c:\devprojects\gitdiesel\silkworm\entity.h
+1361562650 c:\devprojects\gitdiesel\silkworm\entity.h
 	"vector.h"
 
 1361492327 source:c:\devprojects\gitdiesel\silkworm\text.cpp
@@ -234,4 +236,10 @@
 
 1361547217 source:c:\devprojects\gitdiesel\silkworm\xml.cpp
 	"xml.h"
+
+1361561321 source:c:\devprojects\gitdiesel\silkworm\druidentity.cpp
+	"entity.h"
+
+1361561327 source:c:\devprojects\gitdiesel\silkworm\standardphysicsentity.cpp
+	"entity.h"
 
