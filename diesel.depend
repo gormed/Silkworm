@@ -1,0 +1,123 @@
+# depslib dependency file v1.0
+1361314586 source:c:\devprojects\diesel\entity.cpp
+
+1329255250 source:c:\devprojects\diesel\gl3w.c
+	<GL3/gl3w.h>
+	<windows.h>
+	<Carbon/Carbon.h>
+	<dlfcn.h>
+	<GL/glx.h>
+
+1361547612 source:c:\devprojects\diesel\image.cpp
+	<GL3/gl3w.h>
+	"log.h"
+	"image.h"
+	<vector>
+
+1361489430 c:\devprojects\diesel\log.h
+	<iostream>
+	<fstream>
+
+1361489430 c:\devprojects\diesel\image.h
+	"resource.h"
+
+1361489430 c:\devprojects\diesel\resource.h
+	<map>
+	<string>
+	"file.h"
+
+1361496691 c:\devprojects\diesel\file.h
+	<stdio.h>
+
+1361489430 source:c:\devprojects\diesel\log.cpp
+	<stdio.h>
+	<string.h>
+	"log.h"
+
+1361492521 source:c:\devprojects\diesel\state.cpp
+	<GL3/gl3w.h>
+	<exception>
+	<sstream>
+	<iostream>
+	"state.h"
+	"xml.h"
+	"log.h"
+
+1361498470 c:\devprojects\diesel\state.h
+	<GL3/gl3w.h>
+	"resource.h"
+
+1361489721 c:\devprojects\diesel\xml.h
+	<map>
+	<string>
+	"file.h"
+
+1361551003 source:c:\devprojects\diesel\testmain.cpp
+	<GL3/gl3w.h>
+	<list>
+	"log.h"
+	"osabs.h"
+	"text.h"
+	"vector.h"
+	"matrix.h"
+	"image.h"
+	"collada.h"
+	"entity.h"
+
+1361547217 source:c:\devprojects\diesel\xml.cpp
+	"xml.h"
+
+1361489429 source:c:\devprojects\diesel\array.cpp
+	<GL3/gl3w.h>
+	"array.h"
+
+1361489430 c:\devprojects\diesel\array.h
+	"resource.h"
+	"state.h"
+
+1361370824 source:c:\devprojects\diesel\simplecube.cpp
+	"simplecube.h"
+
+1361368737 c:\devprojects\diesel\simplecube.h
+	"vector.h"
+	"state.h"
+	"array.h"
+
+1361545013 c:\devprojects\diesel\vector.h
+	<math.h>
+
+1361371518 source:c:\devprojects\diesel\osabs.cpp
+	<GL3/gl3w.h>
+	"project.h"
+	"osabs.h"
+	"log.h"
+
+1361376730 c:\devprojects\diesel\project.h
+
+1361368160 c:\devprojects\diesel\osabs.h
+
+1361540263 c:\devprojects\diesel\matrix.h
+	<math.h>
+	"vector.h"
+
+1361489430 source:c:\devprojects\diesel\collada.cpp
+	<sstream>
+	"xml.h"
+	"collada.h"
+
+1361493246 c:\devprojects\diesel\collada.h
+	"xml.h"
+	"array.h"
+	"state.h"
+
+1361491155 c:\devprojects\diesel\text.h
+
+1361492327 source:c:\devprojects\diesel\text.cpp
+	<GL3/gl3w.h>
+	"state.h"
+	"array.h"
+	"text.h"
+
+1361553560 c:\devprojects\diesel\entity.h
+	"vector.h"
+

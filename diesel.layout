@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="array.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="208" topLine="0" />
+	</File>
+	<File name="array.h" open="1" top="0" tabpos="13">
+		<Cursor position="741" topLine="15" />
+	</File>
+	<File name="collada.cpp" open="1" top="0" tabpos="23">
+		<Cursor position="116" topLine="263" />
+	</File>
+	<File name="collada.h" open="1" top="0" tabpos="22">
+		<Cursor position="112" topLine="0" />
+	</File>
+	<File name="entity.cpp" open="1" top="0" tabpos="3">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="entity.h" open="1" top="1" tabpos="7">
+		<Cursor position="9781" topLine="326" />
+	</File>
+	<File name="file.h" open="1" top="0" tabpos="8">
+		<Cursor position="567" topLine="0" />
+	</File>
+	<File name="gl3w.c" open="1" top="0" tabpos="2">
+		<Cursor position="216" topLine="3" />
+	</File>
+	<File name="image.cpp" open="1" top="0" tabpos="4">
+		<Cursor position="29371" topLine="398" />
+	</File>
+	<File name="image.h" open="1" top="0" tabpos="15">
+		<Cursor position="488" topLine="22" />
+	</File>
+	<File name="log.cpp" open="1" top="0" tabpos="5">
+		<Cursor position="157" topLine="15" />
+	</File>
+	<File name="log.h" open="1" top="0" tabpos="19">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="matrix.h" open="1" top="0" tabpos="16">
+		<Cursor position="2409" topLine="100" />
+	</File>
+	<File name="osabs.cpp" open="1" top="0" tabpos="18">
+		<Cursor position="1046" topLine="55" />
+	</File>
+	<File name="osabs.h" open="1" top="0" tabpos="20">
+		<Cursor position="71" topLine="0" />
+	</File>
+	<File name="project.h" open="1" top="0" tabpos="21">
+		<Cursor position="177" topLine="0" />
+	</File>
+	<File name="resource.h" open="1" top="0" tabpos="14">
+		<Cursor position="532" topLine="8" />
+	</File>
+	<File name="state.cpp" open="1" top="0" tabpos="6">
+		<Cursor position="585" topLine="31" />
+	</File>
+	<File name="state.h" open="1" top="0" tabpos="12">
+		<Cursor position="1164" topLine="8" />
+	</File>
+	<File name="testmain.cpp" open="1" top="0" tabpos="11">
+		<Cursor position="2440" topLine="81" />
+	</File>
+	<File name="text.cpp" open="1" top="0" tabpos="24">
+		<Cursor position="70" topLine="0" />
+	</File>
+	<File name="text.h" open="1" top="0" tabpos="25">
+		<Cursor position="360" topLine="0" />
+	</File>
+	<File name="vector.h" open="1" top="0" tabpos="9">
+		<Cursor position="266" topLine="6" />
+	</File>
+	<File name="xml.cpp" open="1" top="0" tabpos="10">
+		<Cursor position="119" topLine="0" />
+	</File>
+	<File name="xml.h" open="1" top="0" tabpos="17">
+		<Cursor position="690" topLine="9" />
+	</File>
+</CodeBlocks_layout_file>

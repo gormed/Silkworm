@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+
+<images>
+
+	<image name="Material"      source="images/concrete.png" />
+	<image name="Material_001"  source="images/orange.png" />
+	<image name="Material_003"  source="images/green.png" />
+	<image name="Material_004"  source="images/steel.png" />
+	<image name="Material_005"  source="images/fence.png" />
+	
+</images>
