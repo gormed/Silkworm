@@ -15,6 +15,7 @@
 #include "array.h"
 #include "state.h"
 #include "image.h"
+#include "armature.h"
 
 struct Geometry;
 struct Mesh;
@@ -40,7 +41,10 @@ class Collada
 {
 private:
 
-    void readGeometry(XML &geoxml);
+    void readGeometry(XML &geoxml, XML *skinxml);
+
+    void readSkin(XML *skinxml, XML &xml);
+    void readBone(XML &boneXML, NodeMap &animations, Armature *armature, int &boneindex, Bone *parent);
 
 public:
 
@@ -50,7 +54,9 @@ public:
 
     State *state;
 
-    Collada() { state = NULL; }
+    Armature *armature;
+
+    Collada() { state = NULL; armature = NULL; }
 
     void read(File &file);
 

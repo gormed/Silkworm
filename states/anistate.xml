@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<state>
+
+	<shader type="vertex">
+
+		#version 150
+		
+		uniform mat4 projection;
+		uniform mat4 modelview;
+		
+		uniform mat4 bonematrix[20];
+		
+		in vec4 position;
+		in vec3 normal;
+		in vec2 texcoord;
+		in int  boneindex;
+		
+		out float light;
+		
+		void main() {
+			gl_Position = projection * modelview * bonematrix[boneindex] * position;
+			
+			light = normal.z * 0.5 + 0.5;
+		}
+			
+	</shader>
+	
+	<shader type="fragment">
+	
+		#version 330
+		
+		out vec4 frag;
+		
+		in float light;
+		
+		void main() {
+			frag = vec4(light,light,light,1.0);
+		}
+		
+	</shader>
+	
+	<flag name="earlyz" />
+	<flag name="zwrite" />
+	
+	<symbol name="position" length="4" />
+	<symbol name="normal" length="3" />
+	<symbol name="texcoord" length="2" />
+	<symbol name="boneindex" length="1" />
+	
+	<uniform name="projection" />
+	<uniform name="modelview" />
+	<uniform name="bonematrix" />
+	
+</state>

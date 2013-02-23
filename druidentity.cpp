@@ -26,6 +26,11 @@ DruidEntity::DruidEntity()
     oldDruidState = DRUID;
     druidPrimaryActionState = STANDING;
     druidSecondaryActionState = IDLE;
+
+    aniControl.frame = 1;
+    aniControl.lastframe = 1;
+    aniControl.ip = 0.0f;
+    aniControl.rotation = 0.0f;
 }
 
 void DruidEntity::collisionResponse()
@@ -286,6 +291,91 @@ void DruidEntity::control(int *keyStates, int *lastKeyStates)
             case 3: pos.e[2]=(float)((int)pos.e[2]+1); break;
         }
         pos.e[1]=(float)((int)(pos.e[1]*0.5f)*2)-bba.e[1];
+    }
+
+
+    // animation contol
+
+    switch (druidPrimaryActionState)
+    {
+    case RUNNING:
+    case SPEEDING:
+
+        // rotate animation into movement direction
+
+        aniControl.rotation = atan2f(vel.e[0],vel.e[2])+PI;
+
+        // cycle through running animation frames
+
+        if (aniControl.frame<2||aniControl.frame>7)
+        {
+            aniControl.frame=2;
+            aniControl.ip=0.0f;
+        }
+        else
+        {
+            aniControl.positionoffset = cosf(((float)(aniControl.frame-2)+aniControl.ip)*(PI*2.0f/3.0f))*0.08f;
+
+            // when speeding, go faster
+
+            if(druidPrimaryActionState==SPEEDING) aniControl.ip+=0.2f; else aniControl.ip+=0.15f;
+
+            if (aniControl.ip>=1.0f)
+            {
+                aniControl.lastframe=aniControl.frame;
+                aniControl.frame++;
+                if (aniControl.frame>7) aniControl.frame=2;
+                aniControl.ip-=1.0f;
+            }
+        }
+
+        break;
+
+    case FALLING:
+
+        // select target frame basend on vertical direction
+
+        aniControl.positionoffset=aniControl.positionoffset*0.5f;
+
+        if (vel.e[1]<0.0f) i=4; else i=3;
+
+        if(aniControl.frame!=i)
+        {
+            aniControl.frame=i;
+            aniControl.ip=0.0f;
+        }
+
+        aniControl.ip+=0.2f;
+        if (aniControl.ip>=1.0f)
+        {
+            aniControl.lastframe=i;
+            aniControl.ip=1.0f;
+        }
+
+        break;
+
+    default:
+
+        // quickly revert to standing pose
+
+        aniControl.positionoffset=aniControl.positionoffset*0.5f;
+
+        i=1;
+
+        if(aniControl.frame!=i)
+        {
+            aniControl.frame=i;
+            aniControl.ip=0.0f;
+        }
+
+        aniControl.ip+=0.2f;
+        if (aniControl.ip>=1.0f)
+        {
+            aniControl.lastframe=i;
+            aniControl.ip=1.0f;
+        }
+
+        break;
     }
 
 

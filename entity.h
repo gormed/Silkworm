@@ -74,6 +74,18 @@ class StandardPhysicsEntity : public Entity
 
 
 //
+// animation control information for the player character
+//
+
+struct AniControl
+{
+    int frame,lastframe;
+    float ip;
+    float rotation;
+    float positionoffset;
+};
+
+//
 // the druid entity implements the special actions
 // of the player character
 //
@@ -87,6 +99,8 @@ enum DruidSecondaryActionState { IDLE, FIRING, MELEE, TRANSFORMING };
 class DruidEntity : public StandardPhysicsEntity
 {
     public:
+
+    AniControl aniControl;
 
     DruidState druidState;                                  // the druids current animal form
     DruidState oldDruidState;                               // the druids previous animal form, if he is currently transforming

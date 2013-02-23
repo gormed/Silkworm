@@ -38,7 +38,8 @@ void Array::link()
     for (i=0;i<st->getSymcount();i++)
     {
         glBindBuffer(GL_ARRAY_BUFFER, buffer[i]);
-        glVertexAttribPointer(i,st->getLength(i),GL_FLOAT,false,0,0);
+        if (true||st->getLength(i)>1) glVertexAttribPointer(i,st->getLength(i),GL_FLOAT,false,0,0);
+        else  glVertexAttribPointer(i,st->getLength(i),GL_INT,false,0,0);
         glBufferData(GL_ARRAY_BUFFER, 4 * st->getLength(i) * elements, dataptr, GL_STATIC_DRAW);
 
         dataptr += st->getLength(i) * elements;

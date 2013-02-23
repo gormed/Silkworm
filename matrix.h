@@ -41,6 +41,42 @@ class Matrix
         return m;
     }
 
+    static Matrix flip(Matrix m)
+    {
+        Matrix r;
+
+        r.e[0]=m.e[0];
+        r.e[1]=m.e[4];
+        r.e[2]=m.e[8];
+        r.e[3]=m.e[12];
+
+        r.e[4]=m.e[1];
+        r.e[5]=m.e[5];
+        r.e[6]=m.e[9];
+        r.e[7]=m.e[13];
+
+        r.e[8]=m.e[2];
+        r.e[9]=m.e[6];
+        r.e[10]=m.e[10];
+        r.e[11]=m.e[14];
+
+        r.e[12]=m.e[3];
+        r.e[13]=m.e[7];
+        r.e[14]=m.e[11];
+        r.e[15]=m.e[15];
+
+        return r;
+    }
+
+    static Matrix interpolate (Matrix m0, Matrix m1, float ip)
+    {
+        Matrix r;
+
+        for(int i=0;i<16;i++) r.e[i] = m0.e[i]*(1.0f-ip) + m1.e[i]*ip;
+
+        return r;
+    }
+
     static Matrix ortho(float left, float right, float bottom, float top, float _far, float _near)
     {
         Matrix r;

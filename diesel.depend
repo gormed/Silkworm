@@ -121,7 +121,7 @@
 1361553560 c:\devprojects\diesel\entity.h
 	"vector.h"
 
-1361489429 source:c:\devprojects\gitdiesel\silkworm\array.cpp
+1361586866 source:c:\devprojects\gitdiesel\silkworm\array.cpp
 	<GL3/gl3w.h>
 	"array.h"
 
@@ -137,26 +137,28 @@
 1361496691 c:\devprojects\gitdiesel\silkworm\file.h
 	<stdio.h>
 
-1361561737 c:\devprojects\gitdiesel\silkworm\state.h
+1361576287 c:\devprojects\gitdiesel\silkworm\state.h
 	<GL3/gl3w.h>
 	"resource.h"
 	"matrix.h"
 
-1361561310 source:c:\devprojects\gitdiesel\silkworm\collada.cpp
+1361626781 source:c:\devprojects\gitdiesel\silkworm\collada.cpp
 	<sstream>
 	"xml.h"
 	"collada.h"
+	"log.h"
 
-1361489721 c:\devprojects\gitdiesel\silkworm\xml.h
+1361625238 c:\devprojects\gitdiesel\silkworm\xml.h
 	<map>
 	<string>
 	"file.h"
 
-1361561302 c:\devprojects\gitdiesel\silkworm\collada.h
+1361625409 c:\devprojects\gitdiesel\silkworm\collada.h
 	"xml.h"
 	"array.h"
 	"state.h"
 	"image.h"
+	"armature.h"
 
 1361314586 source:c:\devprojects\gitdiesel\silkworm\entity.cpp
 
@@ -195,7 +197,7 @@
 
 1361557721 c:\devprojects\gitdiesel\silkworm\osabs.h
 
-1361561737 source:c:\devprojects\gitdiesel\silkworm\state.cpp
+1361576287 source:c:\devprojects\gitdiesel\silkworm\state.cpp
 	<GL3/gl3w.h>
 	<exception>
 	<sstream>
@@ -204,7 +206,7 @@
 	"xml.h"
 	"log.h"
 
-1361563783 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
+1361629948 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
 	<GL3/gl3w.h>
 	<list>
 	"log.h"
@@ -222,11 +224,11 @@
 1361545013 c:\devprojects\gitdiesel\silkworm\vector.h
 	<math.h>
 
-1361540263 c:\devprojects\gitdiesel\silkworm\matrix.h
+1361628932 c:\devprojects\gitdiesel\silkworm\matrix.h
 	<math.h>
 	"vector.h"
 
-1361562650 c:\devprojects\gitdiesel\silkworm\entity.h
+1361629948 c:\devprojects\gitdiesel\silkworm\entity.h
 	"vector.h"
 
 1361492327 source:c:\devprojects\gitdiesel\silkworm\text.cpp
@@ -238,7 +240,7 @@
 1361547217 source:c:\devprojects\gitdiesel\silkworm\xml.cpp
 	"xml.h"
 
-1361565860 source:c:\devprojects\gitdiesel\silkworm\druidentity.cpp
+1361630029 source:c:\devprojects\gitdiesel\silkworm\druidentity.cpp
 	"entity.h"
 
 1361566027 source:c:\devprojects\gitdiesel\silkworm\standardphysicsentity.cpp
@@ -249,4 +251,7 @@
 	"gamepad.h"
 
 1361563396 c:\devprojects\gitdiesel\silkworm\gamepad.h
+
+1361628932 c:\devprojects\gitdiesel\silkworm\armature.h
+	"log.h"
 

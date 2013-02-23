@@ -96,6 +96,7 @@ class State : Resource
 
     void uniformMatrix (const char *uniformname, const Matrix &m) const;
     void uniformMatrix (const int location, const Matrix &m) const;
+    void uniformMatrix (const char *unfiformname, const Matrix *m, const int n) const;
 
     void set () const;
 

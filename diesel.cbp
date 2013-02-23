@@ -34,14 +34,18 @@
 		<Linker>
 			<Add library="C:\Program Files (x86)\CodeBlocks\MinGW\lib\libopengl32.a" />
 			<Add library="C:\Program Files (x86)\CodeBlocks\MinGW\lib\libgdi32.a" />
+			<Add library="C:\Program Files (x86)\CodeBlocks\MinGW\lib\libwinmm.a" />
 		</Linker>
+		<Unit filename="armature.h" />
 		<Unit filename="array.cpp" />
 		<Unit filename="array.h" />
 		<Unit filename="collada.cpp" />
 		<Unit filename="collada.h" />
-		<Unit filename="entity.cpp" />
+		<Unit filename="druidentity.cpp" />
 		<Unit filename="entity.h" />
 		<Unit filename="file.h" />
+		<Unit filename="gamepad.cpp" />
+		<Unit filename="gamepad.h" />
 		<Unit filename="gl3w.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -54,6 +58,7 @@
 		<Unit filename="osabs.h" />
 		<Unit filename="project.h" />
 		<Unit filename="resource.h" />
+		<Unit filename="standardphysicsentity.cpp" />
 		<Unit filename="state.cpp" />
 		<Unit filename="state.h" />
 		<Unit filename="testmain.cpp" />

@@ -13,6 +13,7 @@
 
 #include "xml.h"
 #include "collada.h"
+#include "log.h"
 
 void Collada::read(File &file)
 {
@@ -32,14 +33,34 @@ void Collada::read(File &file)
 
     for (p=geometry.begin();p!=geometry.end();++p)
     {
+        // check wether skinning info exists
+
+        XML *skinxml = NULL;
+
+        NodeMap skin = xml.get("library_controllers")[0].get("controller")[0].get("skin");
+
+        if (skin[0]["source"]=="#"+(p->second)["id"])
+        {
+            // read skinning info
+
+            skinxml = &skin[0];
+
+            // note that the skin import code is a hack
+            // it will only work in certain special cases!
+
+            readSkin(skinxml,xml);
+        }
+
         // read each geometry object
 
-        readGeometry( (p->second) );
+        readGeometry( (p->second), skinxml );
     }
+
+
 
 }
 
-void Collada::readGeometry(XML &geoxml)
+void Collada::readGeometry(XML &geoxml, XML *skinxml)
 {
     int i,j,k,l;
 
@@ -68,6 +89,47 @@ void Collada::readGeometry(XML &geoxml)
     // create a new geometry object for storage in the geometry map
 
     Geometry geometry;
+
+    int *skin_v=0;
+
+    if (skinxml)
+    {
+        // if there is skinning data, fill skin_v
+
+        int skin_count;
+        int skin_vcount;
+        int skin_skip;
+
+        std::stringstream skin_count_stream ( skinxml->get("vertex_weights")[0]["count"] );
+        skin_count_stream >> skin_count;
+
+        skin_v = new int[skin_count];
+        std::stringstream skin_vcount_stream ( skinxml->get("vertex_weights")[0].get("vcount")[0].value() );
+        std::stringstream skin_v_stream ( skinxml->get("vertex_weights")[0].get("v")[0].value() );
+
+        for(i=0;i<skin_count;i++)
+        {
+            skin_vcount_stream >> skin_vcount;
+
+            if(skin_vcount>0)
+            {
+
+                skin_v_stream >> skin_v[i]; // only save 1 joint per vertex
+                skin_v_stream >> skin_skip; // skip weight
+
+                for(j=1;j<skin_vcount;j++)
+                {
+                    skin_v_stream >> skin_skip; // skip additional joints
+                    skin_v_stream >> skin_skip; // skip additional weights
+                }
+
+            }
+            else
+            {
+                skin_v[i]=0;
+            }
+        }
+    }
 
     // retrieve the polylists
 
@@ -267,6 +329,38 @@ void Collada::readGeometry(XML &geoxml)
                     sourceindex+=poly_vcount[j];
                 }
             }
+            else if (mesh.array.usestate->getLength(i)==1&&skin_v)
+            {
+                // assume this symbol to be a joint index for skinning
+                // and copy the skin_v table, if any has been created
+
+                sourceindex = 0;
+
+                for(j=0;j<poly_count;j++)
+                {
+                    // loop through vertices,
+                    // break quads up into tris
+
+                    for(l=0;l<assemblerlistend[poly_vcount[j]-3];l++)
+                    {
+
+                        int t1=poly_p[ (sourceindex+assemblerlist[l])*source_total + source_offset[0] ];
+
+                        mesh.array.data[dataindex]=*(float*)&skin_v[t1]; // conversion to float
+
+                        if(*(int*)&mesh.array.data[dataindex] <0) throw(1);
+
+                        dataindex++;
+
+
+                    }
+
+                    sourceindex+=poly_vcount[j];
+
+                }
+
+
+            }
             else
             {
                 // there is a symbol in the render state
@@ -292,6 +386,8 @@ void Collada::readGeometry(XML &geoxml)
         delete []mesh.array.data;
 
         // clean up
+
+        if (skin_v) delete []skin_v;
 
         delete []poly_p;
         delete []poly_vcount;
@@ -324,3 +420,135 @@ void Geometry::draw(ImageMap &materials)
         (mp->second).array.draw();
     }
 }
+
+void Collada::readSkin(XML *skinxml, XML &xml)
+{
+    int i,j;
+    NodeMap::iterator p;
+
+    // initialize the armature object
+
+    armature = new Armature();
+
+
+    // get the bind shape matrix
+
+    std::stringstream bsmStream ( skinxml->get("bind_shape_matrix")[0].value() );
+    for (i=0;i<16;i++) bsmStream >> armature->bindShape.e[i];
+
+    // collada stores matrices in row-major format, transponse
+    armature->bindShape=Matrix::flip(armature->bindShape);
+
+
+    // get bone count
+
+    std::stringstream bonecountStream ( skinxml->get("source")[0].get("Name_array")[0]["count"] );
+    bonecountStream >> armature->nBones;
+    armature->nBones++; // account for the root bone
+
+    armature->bones = new Bone[armature->nBones];
+
+
+    // get the inverse bind pose matrices
+
+    std::stringstream ibpStream ( skinxml->get("source")[1].get("float_array")[0].value() );
+
+    for (i=1;i<armature->nBones;i++)
+    {
+        for (j=0;j<16;j++) ibpStream >> armature->bones[i].inverseBindPose.e[j];
+
+        // collada stores matrices in row-major format, transponse
+        armature->bones[i].inverseBindPose=Matrix::flip(armature->bones[i].inverseBindPose);
+    }
+
+
+
+    // locate the animation library
+
+    NodeMap animations = xml.get("library_animations")[0].get("animation");
+
+    // locate the node hierarchy
+
+    NodeMap visual_scene = xml.get("library_visual_scenes")[0].get("visual_scene");
+
+    NodeMap nodes = visual_scene[0].get("node");
+
+    // read the bone hierarchy
+
+    int boneindex=0;
+
+    for (p=nodes.begin();p!=nodes.end();++p)
+    if ((p->second)["id"]=="Armature")
+    {
+        readBone( (p->second).get("node")[0] , animations, armature, boneindex, NULL );
+    }
+
+}
+
+
+void Collada::readBone( XML &boneXML, NodeMap &animations, Armature *armature, int &boneindex, Bone *parent)
+{
+    int i,j;
+
+    // save hierarchy
+
+    Bone *thisbone = &armature->bones[boneindex];
+    thisbone->parent = parent;
+
+
+    // read the base matrix
+
+    std::stringstream matrixStream (boneXML.get("matrix")[0].value());
+
+    for(i=0;i<16;i++) matrixStream >> thisbone->baseTransform.e[i];
+
+    // collada stores matrices in row-major format, transponse
+    thisbone->baseTransform = Matrix::flip(thisbone->baseTransform);
+
+
+
+    // find and read the animation matrices
+
+
+    NodeMap::iterator p;
+
+    for(p=animations.begin();p!=animations.end();++p)
+    if ((p->second)["id"] == "Armature_"+boneXML["id"]+"_pose_matrix")  // HACK
+    {
+         if (boneindex==0)
+         {
+             // this is the first bone, get animation count (HACK)
+
+             std::stringstream aniCountStream ( (p->second).get("source")[1].get("technique_common")[0].get("accessor")[0]["count"] );
+             aniCountStream >> armature->nAnimations;
+
+         }
+
+         thisbone->aniTransform = new Matrix[armature->nAnimations];
+
+         std::stringstream aniMatrixStream ( (p->second).get("source")[1].get("float_array")[0].value() );
+
+         for(i=0;i<armature->nAnimations;i++)
+         {
+             for(j=0;j<16;j++) aniMatrixStream >> thisbone->aniTransform[i].e[j];
+
+             // collada stores matrices in row-major format, transponse
+             thisbone->aniTransform[i]=Matrix::flip(thisbone->aniTransform[i]);
+         }
+
+         break;
+    }
+
+
+    // read children
+
+    boneindex++;
+
+    NodeMap children = boneXML.get("node");
+    for(p=children.begin();p!=children.end();++p)
+    {
+        readBone( (p->second), animations, armature, boneindex, thisbone);
+    }
+
+}
+
