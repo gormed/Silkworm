@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+
+<tileset>
+	<tile name="acubething" type="block" />
+	<tile name="selectbox" type="void" />
+	<tile name="diagonalwall" type="block" />
+	<tile name="diagonalceilingcorner" type="void" />
+	<tile name="walltriangle" type="void" />
+	<tile name="Cube.060" type="void" />
+	<tile name="diagonalceiling" type="void" />
+	<tile name="wall" type="block" />
+	<tile name="largecolumn" type="void" />
+	<tile name="doublecolumn" type="void" />
+	<tile name="doublecolumntop" type="void" />
+	<tile name="smallcolumn" type="void" />
+	<tile name="smallcolumntop" type="void" />
+	<tile name="platform" type="platform" />
+	<tile name="platformroundedcorner" type="void" />
+	<tile name="grassinnercorner" type="void" />
+	<tile name="grass" type="platform" />
+	<tile name="grassouterdcorner" type="void" />
+	<tile name="grasscorner" type="void" />
+	<tile name="largecolumntop" type="void" />
+	<tile name="Cube.036" type="void" />
+	<tile name="Cube.035" type="void" />
+	<tile name="wallrounddoor" type="block" />
+	<tile name="Cylinder.004" type="void" />
+	<tile name="wallmallwindowright" type="block" />
+	<tile name="wallmallwindow" type="block" />
+	<tile name="wallmallwindowleft" type="block" />
+	<tile name="Cube.028" type="void" />
+	<tile name="wallsmallwindow" type="block" />
+	<tile name="wallsmallwindowtop" type="block" />
+	<tile name="walllargewindowtop" type="block" />
+	<tile name="walllargewindow" type="block" />
+	<tile name="stairs" type="void" />
+	<tile name="vent" type="void" />
+	<tile name="walllargewindowbottom" type="block" />
+	<tile name="wallwindow" type="block" />
+	<tile name="walldoor" type="block" />
+	<tile name="walldoorbricked" type="block" />
+	<tile name="platformoutercorner" type="void" />
+	<tile name="platforminnercorner" type="void" />
+	<tile name="platformcorner" type="void" />
+	<tile name="platformoutercorner2" type="void" />
+	<tile name="steelbars" type="void" />
+	<tile name="Cube.021" type="void" />
+	<tile name="fence" type="complete" />
+	<tile name="fenceend" type="complete" />
+</tileset>

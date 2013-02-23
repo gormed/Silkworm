@@ -142,7 +142,7 @@
 	"resource.h"
 	"matrix.h"
 
-1361626781 source:c:\devprojects\gitdiesel\silkworm\collada.cpp
+1361634844 source:c:\devprojects\gitdiesel\silkworm\collada.cpp
 	<sstream>
 	"xml.h"
 	"collada.h"
@@ -206,7 +206,7 @@
 	"xml.h"
 	"log.h"
 
-1361629948 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
+1361643085 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
 	<GL3/gl3w.h>
 	<list>
 	"log.h"
@@ -240,10 +240,10 @@
 1361547217 source:c:\devprojects\gitdiesel\silkworm\xml.cpp
 	"xml.h"
 
-1361630029 source:c:\devprojects\gitdiesel\silkworm\druidentity.cpp
+1361642447 source:c:\devprojects\gitdiesel\silkworm\druidentity.cpp
 	"entity.h"
 
-1361566027 source:c:\devprojects\gitdiesel\silkworm\standardphysicsentity.cpp
+1361640736 source:c:\devprojects\gitdiesel\silkworm\standardphysicsentity.cpp
 	"entity.h"
 
 1361563430 source:c:\devprojects\gitdiesel\silkworm\gamepad.cpp

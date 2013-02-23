@@ -187,7 +187,7 @@ void DruidEntity::control(int *keyStates, int *lastKeyStates)
         {
             movementState=FREEFALL;
             druidPrimaryActionState=FALLING;
-            acc.e[1]+=1.0f;
+            acc.e[1]+=0.7f;
         }
 
         else if (  druidPrimaryActionState==RUNNING || druidPrimaryActionState==STANDING
@@ -290,7 +290,7 @@ void DruidEntity::control(int *keyStates, int *lastKeyStates)
             case 2: pos.e[2]=(float)((int)pos.e[2]); break;
             case 3: pos.e[2]=(float)((int)pos.e[2]+1); break;
         }
-        pos.e[1]=(float)((int)(pos.e[1]*0.5f)*2)-bba.e[1];
+        pos.e[1]=(float)((int)(pos.e[1]*0.5f)*2)-bba.e[1]+0.1f;
     }
 
 

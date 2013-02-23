@@ -408,6 +408,8 @@ void Collada::readGeometry(XML &geoxml, XML *skinxml)
 
     this->geometries[geoxml["name"]]=geometry;
 
+    //Log::log() << "<tile name=\"" << geoxml["name"] << "\" type = \"\" />\n";
+
 }
 
 void Geometry::draw(ImageMap &materials)

@@ -17,19 +17,22 @@ void StandardPhysicsEntity::step()
     if(movementState != FIX)
     {
 
-        // check collision with ground first
+        // check collision with ground and ceiling first
+
         int co[3]= { 1,0,2 };
 
         for(i=0;i<3;i++)
         {
             collisionState = collide(this);
 
+            //if (collisionState&(64|128|256|512)) return;    //  climb-collision has priority
+
             if (collisionState & (1<<(co[i]*2)) )
             {
                 if (vel.e[co[i]]<0) vel.e[co[i]]=0;
 
                 t=(int)pos.e[co[i]];
-                pos.e[co[i]]=(float)t-bba.e[co[i]]+EPSILON;
+                pos.e[co[i]]=(float)t-bba.e[co[i]]+0.05f;
             }
 
             if (collisionState & (1<<(co[i]*2+1)) )
@@ -37,7 +40,7 @@ void StandardPhysicsEntity::step()
                 if (vel.e[co[i]]>0) vel.e[co[i]]=0;
 
                 t=(int)pos.e[co[i]]+1;
-                pos.e[co[i]]=(float)t-bbb.e[co[i]]-EPSILON;
+                pos.e[co[i]]=(float)t-bbb.e[co[i]]-0.05f;
             }
         }
 

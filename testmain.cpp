@@ -78,6 +78,8 @@ typedef std::list<LevelTileDef> LevelTile;
 LevelTile level[LEVELWIDTH*LEVELDEPTH*LEVELHEIGHT];
 unsigned char collisionLevel[LEVELWIDTH*LEVELDEPTH*LEVELHEIGHT];
 
+typedef std::map<std::string,std::string> TilesetMap;
+
 DruidEntity testdruid;
 int lastkeystatearray[16] = { 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0 };
 int keystatearray[16] = { 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0 };
@@ -107,78 +109,119 @@ int collide(Entity *e)
    // this code is fucking ugly and needs to be simplified
 
 
+   // codes returned from collisonLevelAT:
+   // bit 0 : block
+   // bit 1 : platform at bottom
+   // bit 2 : platform at top
+
    // add epsilon to account for contact-collision
 
-   if (    collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bba.e[1]+colEps,e->bba.e[2]+colEps))
-        || collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bbb.e[1]-colEps,e->bba.e[2]+colEps))
-        || collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bba.e[1]+colEps,e->bbb.e[2]-colEps))
-        || collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bbb.e[1]-colEps,e->bbb.e[2]-colEps))  ) cflag|=1;
+   int vposr0=(int)(e->pos.e[1]*0.5f);
+   int vposr1=(int)( (e->pos.e[1]+e->bba.e[1]-colEps) *0.5f );
+   int vposr2=(int)( (e->pos.e[1]+e->bbb.e[1]+colEps) *0.5f );
 
-   if (    collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bba.e[1]+colEps,e->bba.e[2]+colEps))
-        || collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bbb.e[1]-colEps,e->bba.e[2]+colEps))
-        || collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bba.e[1]+colEps,e->bbb.e[2]-colEps))
-        || collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bbb.e[1]-colEps,e->bbb.e[2]-colEps))  ) cflag|=2;
+   if (    (collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bba.e[1]+colEps,e->bba.e[2]+colEps))&1)
+        || (collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bbb.e[1]-colEps,e->bba.e[2]+colEps))&1)
+        || (collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bba.e[1]+colEps,e->bbb.e[2]-colEps))&1)
+        || (collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bbb.e[1]-colEps,e->bbb.e[2]-colEps))&1)  ) cflag|=1;
 
-    if (   collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bba.e[1]-colEps,e->bba.e[2]+colEps))
-        || collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bba.e[1]-colEps,e->bba.e[2]+colEps))
-        || collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bba.e[1]-colEps,e->bbb.e[2]-colEps))
-        || collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bba.e[1]-colEps,e->bbb.e[2]-colEps))  ) cflag|=4;
+   if (    (collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bba.e[1]+colEps,e->bba.e[2]+colEps))&1)
+        || (collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bbb.e[1]-colEps,e->bba.e[2]+colEps))&1)
+        || (collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bba.e[1]+colEps,e->bbb.e[2]-colEps))&1)
+        || (collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bbb.e[1]-colEps,e->bbb.e[2]-colEps))&1)  ) cflag|=2;
 
-    if (   collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bbb.e[1]+colEps,e->bba.e[2]+colEps))
-        || collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bbb.e[1]+colEps,e->bba.e[2]+colEps))
-        || collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bbb.e[1]+colEps,e->bbb.e[2]-colEps))
-        || collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bbb.e[1]+colEps,e->bbb.e[2]-colEps))  ) cflag|=8;
+    if ( vposr0 != vposr1 )
+    if (   (collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bba.e[1]-colEps,e->bba.e[2]+colEps))&4)
+        || (collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bba.e[1]-colEps,e->bba.e[2]+colEps))&4)
+        || (collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bba.e[1]-colEps,e->bbb.e[2]-colEps))&4)
+        || (collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bba.e[1]-colEps,e->bbb.e[2]-colEps))&4)  ) cflag|=4;
 
-    if (   collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bba.e[1]+colEps,e->bba.e[2]-colEps))
-        || collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bba.e[1]+colEps,e->bba.e[2]-colEps))
-        || collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bbb.e[1]-colEps,e->bba.e[2]-colEps))
-        || collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bbb.e[1]-colEps,e->bba.e[2]-colEps))  ) cflag|=16;
+    if ( vposr0 != vposr2 )
+    if (   (collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bbb.e[1]+colEps,e->bba.e[2]+colEps))&2)
+        || (collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bbb.e[1]+colEps,e->bba.e[2]+colEps))&2)
+        || (collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bbb.e[1]+colEps,e->bbb.e[2]-colEps))&2)
+        || (collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bbb.e[1]+colEps,e->bbb.e[2]-colEps))&2)  ) cflag|=8;
 
-    if (   collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bba.e[1]+colEps,e->bbb.e[2]+colEps))
-        || collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bba.e[1]+colEps,e->bbb.e[2]+colEps))
-        || collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bbb.e[1]-colEps,e->bbb.e[2]+colEps))
-        || collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bbb.e[1]-colEps,e->bbb.e[2]+colEps))  ) cflag|=32;
+    if (   (collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bba.e[1]+colEps,e->bba.e[2]-colEps))&1)
+        || (collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bba.e[1]+colEps,e->bba.e[2]-colEps))&1)
+        || (collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bbb.e[1]-colEps,e->bba.e[2]-colEps))&1)
+        || (collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bbb.e[1]-colEps,e->bba.e[2]-colEps))&1)  ) cflag|=16;
+
+    if (   (collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bba.e[1]+colEps,e->bbb.e[2]+colEps))&1)
+        || (collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bba.e[1]+colEps,e->bbb.e[2]+colEps))&1)
+        || (collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bbb.e[1]-colEps,e->bbb.e[2]+colEps))&1)
+        || (collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bbb.e[1]-colEps,e->bbb.e[2]+colEps))&1)  ) cflag|=32;
 
 
     // detect wether climbing an edge is possible
 
-    if (  (collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bba.e[1]-colEps,e->bba.e[2]+colEps))
-        || collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bba.e[1]-colEps,e->bbb.e[2]-colEps)))
-        &&!collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bbb.e[1]+colEps,e->bba.e[2]+colEps))
-        &&!collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bbb.e[1]+colEps,e->bbb.e[2]-colEps))  ) cflag|=64;
 
-    if (  (collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bba.e[1]-colEps,e->bba.e[2]+colEps))
-        || collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bba.e[1]-colEps,e->bbb.e[2]-colEps)))
-        &&!collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bbb.e[1]+colEps,e->bba.e[2]+colEps))
-        &&!collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bbb.e[1]+colEps,e->bbb.e[2]-colEps))  ) cflag|=128;
+    if ( vposr0 == vposr2 )
+    if (  ( (collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bba.e[1]-colEps,e->bba.e[2]+colEps))&4)
+        ||  (collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bba.e[1]-colEps,e->bbb.e[2]-colEps))&4))
+        &&  (collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bbb.e[1]+colEps,e->bba.e[2]+colEps))&2)
+        &&  (collisionLevelAt(e->pos+Vector(e->bba.e[0]-colEps,e->bbb.e[1]+colEps,e->bbb.e[2]-colEps))&2)  ) cflag|=64;
 
-    if (  (collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bba.e[1]-colEps,e->bba.e[2]-colEps))
-        || collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bba.e[1]-colEps,e->bba.e[2]-colEps)))
-        &&!collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bbb.e[1]+colEps,e->bba.e[2]-colEps))
-        &&!collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bbb.e[1]+colEps,e->bba.e[2]-colEps))  ) cflag|=256;
+    if ( vposr0 == vposr2 )
+    if (  ( (collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bba.e[1]-colEps,e->bba.e[2]+colEps))&4)
+        ||  (collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bba.e[1]-colEps,e->bbb.e[2]-colEps))&4))
+        &&  (collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bbb.e[1]+colEps,e->bba.e[2]+colEps))&2)
+        &&  (collisionLevelAt(e->pos+Vector(e->bbb.e[0]+colEps,e->bbb.e[1]+colEps,e->bbb.e[2]-colEps))&2)  ) cflag|=128;
 
-    if (  (collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bba.e[1]-colEps,e->bbb.e[2]+colEps))
-        || collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bba.e[1]-colEps,e->bbb.e[2]+colEps)))
-        &&!collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bbb.e[1]+colEps,e->bbb.e[2]+colEps))
-        &&!collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bbb.e[1]+colEps,e->bbb.e[2]+colEps))  ) cflag|=512;
+    if ( vposr0 == vposr2 )
+    if (  ( (collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bba.e[1]-colEps,e->bba.e[2]-colEps))&4)
+        ||  (collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bba.e[1]-colEps,e->bba.e[2]-colEps))&4))
+        &&  (collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bbb.e[1]+colEps,e->bba.e[2]-colEps))&2)
+        &&  (collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bbb.e[1]+colEps,e->bba.e[2]-colEps))&2)  ) cflag|=256;
+
+    if ( vposr0 == vposr2 )
+    if (  ( (collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bba.e[1]-colEps,e->bbb.e[2]+colEps))&4)
+        ||  (collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bba.e[1]-colEps,e->bbb.e[2]+colEps))&4))
+        &&  (collisionLevelAt(e->pos+Vector(e->bba.e[0]+colEps,e->bbb.e[1]+colEps,e->bbb.e[2]+colEps))&2)
+        &&  (collisionLevelAt(e->pos+Vector(e->bbb.e[0]-colEps,e->bbb.e[1]+colEps,e->bbb.e[2]+colEps))&2)  ) cflag|=512;
+
 
 
    return cflag;
 }
 
-void initgame()
+void initgame(TilesetMap &tileset)
 {
     // build the levels collision data
-    // !! this is flawed
+
+    memset(collisionLevel,0,LEVELWIDTH*LEVELHEIGHT*LEVELDEPTH);
+
+    LevelTile::iterator t;
 
     for(int i=0;i<LEVELWIDTH*LEVELHEIGHT*LEVELDEPTH;i++)
     {
-        collisionLevel[i]=level[i].size()>0?1:0;
+        for (t=level[i].begin();t!=level[i].end();++t)
+        {
+            std::string a = t->name;
+            if ( tileset[a]=="block") collisionLevel[i] |= 1;
+            else if ( tileset[a]=="platform")
+            {
+                collisionLevel[i] |= 2;                             // platform at bottom of tile
+                if(i>=LEVELWIDTH) collisionLevel[i-LEVELWIDTH] |=4; // platform at top of tile
+            }
+            else if ( tileset[a]=="complete")
+            {
+                collisionLevel[i] |= 5;
+                if(i<LEVELWIDTH*(LEVELHEIGHT*LEVELDEPTH-1)) collisionLevel[i+LEVELWIDTH] |= 2;
+            }
+        }
     }
+
+    for(int x=0;x<LEVELWIDTH;x++)
+    for(int z=0;z<LEVELDEPTH;z++)
+    {
+        collisionLevel[x+z*LEVELWIDTH*LEVELHEIGHT]=5; // dont fall through the floor into sig sev realm!
+    }
+
 
     // reset the druid
 
-    testdruid.pos = Vector(3.0f,3.0f,3.0f);
+    testdruid.pos = Vector(3.0f,5.0f,5.0f);
     testdruid.vel = Vector(0.0f,0.0f,0.0f);
     testdruid.acc = Vector(0.0f,0.0f,0.0f);
 
@@ -272,6 +315,24 @@ int renderloop()
 	collada->state = teststate;
 	collada->read( colladafile );
 
+	// load and parse the tileset definition file
+
+	File tilesetfile = File::read("data/tileset.xml");
+
+	XML tilesetxml = XML::readfile(tilesetfile);
+	NodeMap tilesettiles = tilesetxml.get("tile");
+
+	TilesetMap tileset;
+
+	for(np=tilesettiles.begin();np!=tilesettiles.end();++np)
+	{
+        std::string a = (np->second)["name"];
+	    std::string b = (np->second)["type"];
+
+   	    tileset[a] = b;
+
+	}
+
     // initialize the cursor
 
     editorcursor.tileused=collada->geometries.begin();
@@ -289,7 +350,7 @@ int renderloop()
 
     // create the level collision data and reset the player character
 
-    initgame();
+    initgame(tileset);
 
 
 
@@ -314,15 +375,18 @@ int renderloop()
         if (gamestate==EDITOR)
         {
 
-            cameraMatrix = Matrix::translation(editorcursor.scrollPosition)
+            cameraMatrix = Matrix::translation(Vector(0,0,editorcursor.scrollPosition.e[2]))
                          * Matrix::rotation(0,editorcursor.looky)
-                         * Matrix::rotation(1,editorcursor.lookx);
+                         * Matrix::rotation(1,editorcursor.lookx)
+                         * Matrix::translation(Vector(editorcursor.scrollPosition.e[0],editorcursor.scrollPosition.e[1],0));
 
         }
         else
         {
-            cameraMatrix = Matrix::translation(Vector(0.0f,0.0f,-5.0f)-testdruid.pos)
-                         * Matrix::rotation(0,0.2f);
+            cameraMatrix = Matrix::translation(Vector(0.0f,0.0f,-5.0f))
+                         * Matrix::rotation(0,0.2f)
+                         * Matrix::translation(Vector(1.0f,-2.0f,0.0f)-testdruid.pos);
+
         }
 
 
@@ -469,6 +533,8 @@ int renderloop()
     }
 
 
+    delete kathy;
+    delete kathystate;
     delete collada;
     delete teststate;
 
@@ -550,7 +616,7 @@ int keydown(int keycode)
         if (keycode==VK_F2+('d'<<8)) savelevel();
         if (keycode==VK_F3+('d'<<8)) loadlevel();
 
-        if (keycode==VK_RETURN+('d'<<8)) initgame();
+        //if (keycode==VK_RETURN+('d'<<8)) initgame();
 
     }
 
