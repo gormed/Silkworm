@@ -124,8 +124,8 @@ class DruidEntity : public StandardPhysicsEntity
     {
         intendedDirection = Vector (0.0f,0.0f,0.0f);
 
-        bba = Vector(-0.25f,-0.9f,-0.25f);  // initial size of the druid
-        bbb = Vector(0.25f,0.9f,0.25f);
+        bba = Vector(-0.33f,-0.95f,-0.33f);  // initial size of the druid
+        bbb = Vector(0.33f,0.95f,0.33f);
 
         vel = Vector(0.0f,0.0f,0.0f);
         acc = Vector(0.0f,0.0f,0.0f);

@@ -121,3 +121,133 @@
 1361553560 c:\devprojects\diesel\entity.h
 	"vector.h"
 
+1361554577 source:n:\projects\githome\silkworm\silkworm\array.cpp
+	<GL3/gl3w.h>
+	"array.h"
+
+1361554577 n:\projects\githome\silkworm\silkworm\array.h
+	"resource.h"
+	"state.h"
+
+1361554577 n:\projects\githome\silkworm\silkworm\resource.h
+	<map>
+	<string>
+	"file.h"
+
+1361554577 n:\projects\githome\silkworm\silkworm\file.h
+	<stdio.h>
+
+1361554577 n:\projects\githome\silkworm\silkworm\state.h
+	<GL3/gl3w.h>
+	"resource.h"
+
+1361554577 source:n:\projects\githome\silkworm\silkworm\collada.cpp
+	<sstream>
+	"xml.h"
+	"collada.h"
+
+1361554577 n:\projects\githome\silkworm\silkworm\xml.h
+	<map>
+	<string>
+	"file.h"
+
+1361554577 n:\projects\githome\silkworm\silkworm\collada.h
+	"xml.h"
+	"array.h"
+	"state.h"
+
+1361554577 source:n:\projects\githome\silkworm\silkworm\entity.cpp
+
+1361554577 source:n:\projects\githome\silkworm\silkworm\gl3w.c
+	<GL3/gl3w.h>
+	<windows.h>
+	<Carbon/Carbon.h>
+	<dlfcn.h>
+	<GL/glx.h>
+
+1361554577 source:n:\projects\githome\silkworm\silkworm\image.cpp
+	<GL3/gl3w.h>
+	"log.h"
+	"image.h"
+	<vector>
+
+1361554577 n:\projects\githome\silkworm\silkworm\log.h
+	<iostream>
+	<fstream>
+
+1361554577 n:\projects\githome\silkworm\silkworm\image.h
+	"resource.h"
+
+1361554577 source:n:\projects\githome\silkworm\silkworm\log.cpp
+	<stdio.h>
+	<string.h>
+	"log.h"
+
+1361554577 source:n:\projects\githome\silkworm\silkworm\osabs.cpp
+	<GL3/gl3w.h>
+	"project.h"
+	"osabs.h"
+	"log.h"
+
+1361554577 n:\projects\githome\silkworm\silkworm\project.h
+
+1361554577 n:\projects\githome\silkworm\silkworm\osabs.h
+
+1361554577 source:n:\projects\githome\silkworm\silkworm\state.cpp
+	<GL3/gl3w.h>
+	<exception>
+	<sstream>
+	<iostream>
+	"state.h"
+	"xml.h"
+	"log.h"
+
+1361733032 source:n:\projects\githome\silkworm\silkworm\testmain.cpp
+	<GL3/gl3w.h>
+	<list>
+	"log.h"
+	"osabs.h"
+	"text.h"
+	"vector.h"
+	"matrix.h"
+	"image.h"
+	"collada.h"
+	"entity.h"
+	"leveltile.h"
+
+1361554577 n:\projects\githome\silkworm\silkworm\text.h
+
+1361554577 n:\projects\githome\silkworm\silkworm\vector.h
+	<math.h>
+
+1361554577 n:\projects\githome\silkworm\silkworm\matrix.h
+	<math.h>
+	"vector.h"
+
+1361733092 n:\projects\githome\silkworm\silkworm\entity.h
+	"vector.h"
+
+1361554577 source:n:\projects\githome\silkworm\silkworm\text.cpp
+	<GL3/gl3w.h>
+	"state.h"
+	"array.h"
+	"text.h"
+
+1361554577 source:n:\projects\githome\silkworm\silkworm\xml.cpp
+	"xml.h"
+
+1361658121 n:\projects\githome\gl3w\include\gl3\gl3w.h
+	<GL3/gl3.h>
+
+1361658121 n:\projects\githome\gl3w\include\gl3\gl3.h
+	<windows.h>
+	<stddef.h>
+	<inttypes.h>
+	<inttypes.h>
+	<inttypes.h>
+	<stdint.h>
+	<stdint.h>
+	<inttypes.h>
+
+1361730045 n:\projects\githome\silkworm\silkworm\leveltile.h
+

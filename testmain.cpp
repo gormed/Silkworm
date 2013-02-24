@@ -60,15 +60,8 @@ struct EditorCursor
 
 EditorCursor editorcursor = { Vector(0.0f,0.0f,-20.0f), 0.0f, 0.0f, Vector(0.0f,0.0f,0.0f), { 0, 0, 0 }, 0.0f, 0 };
 
-struct LevelTileDef
-{
-    std::string name;
-    int rotation;
-};
+#include "leveltile.h"
 
-typedef std::list<LevelTileDef> LevelTile;
-
-LevelTile level[LEVELWIDTH*LEVELDEPTH*LEVELHEIGHT];
 unsigned char collisionLevel[LEVELWIDTH*LEVELDEPTH*LEVELHEIGHT];
 
 DruidEntity testdruid;
@@ -144,7 +137,8 @@ void initgame()
 
     for(int i=0;i<LEVELWIDTH*LEVELHEIGHT*LEVELDEPTH;i++)
     {
-        collisionLevel[i]=level[i].size()>0?1:0;
+        //collisionLevel[i]=level[i].size()>0?1:0;
+        collisionLevel[i]=(level[i].isPassable)?1:0;
     }
 
     // reset the druid
@@ -356,11 +350,13 @@ int renderloop()
         }
 
         // render the level
+        bool passable = false;
 
         for(int z=0;z<LEVELDEPTH;z++)
         for(int y=0;y<LEVELHEIGHT;y++)
         for(int x=0;x<LEVELWIDTH;x++)
         {
+            passable = level[x+y*LEVELWIDTH+z*LEVELWIDTH*LEVELHEIGHT].isPassable;
             LevelTile::iterator li;
 
             for(li=level[x+y*LEVELWIDTH+z*LEVELWIDTH*LEVELHEIGHT].begin();
@@ -373,16 +369,20 @@ int renderloop()
                 glUniformMatrix4fv(teststate->getUniformLocation(1), 1, false, modelviewMatrix.e);
 
                 Geometry &g = collada->geometries[li->name];
+
                 MeshMap::iterator mp;
 
                 for(mp=g.meshes.begin();mp!=g.meshes.end();++mp)
                 {
-                    imagemap[(mp->second).material].use(0);
+                    if (gamestate==EDITOR && passable)
+                        imagemap["Material_003"].use(0);
+                    else
+                        imagemap[(mp->second).material].use(0);
+
                     (mp->second).array.draw();
                 }
             }
         }
-
 
         Text::update();
 
@@ -468,6 +468,13 @@ int keydown(int keycode)
             level[editorcursor.position[0]+editorcursor.position[1]*LEVELWIDTH+editorcursor.position[2]*LEVELWIDTH*LEVELHEIGHT].clear();
         }
 
+        if (keycode=='P'+('d'<<8))
+        {
+            LevelTile* currentTile = &level[editorcursor.position[0]+editorcursor.position[1]*LEVELWIDTH+editorcursor.position[2]*LEVELWIDTH*LEVELHEIGHT];
+            currentTile->isPassable = !currentTile->isPassable;
+
+        }
+
         if (keycode==VK_F2+('d'<<8)) savelevel();
         if (keycode==VK_F3+('d'<<8)) loadlevel();
 
@@ -545,7 +552,7 @@ void savelevel()
 
     for (i=0;i<LEVELWIDTH*LEVELHEIGHT*LEVELDEPTH;i++)
     {
-        f << level[i].size() << " ";
+        f << level[i].size() << " " << level[i].isPassable << " ";;
 
         for (p=level[i].begin();p!=level[i].end();++p)
         {
@@ -568,7 +575,7 @@ void loadlevel()
 
     for (i=0;i<LEVELWIDTH*LEVELHEIGHT*LEVELDEPTH;i++)
     {
-        f >> n;
+        f >> n >> level[i].isPassable;
 
         level[i].clear();
 
