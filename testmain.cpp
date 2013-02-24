@@ -25,11 +25,12 @@ GameState gamestate = EDITOR;
     "welcome to the druid gameplay prototype                         "
     "you are in level editor mode                                    "
     "                                                                "
-    "to move the editing cursor, use     [a] [w] [s] [d] [r] [f]     "
+    "to move the editing cursor, use     [a] [w] [s] [d] [q] [e]     "
     "to select a tile for painting, use  [arrow up] [arrow down]     "
     "to rotate the selected tile, use    [arrow left] [arrow right]  "
     "to paint, use                       [space bar]                 "
     "to erase, use                       [delete]                    "
+    "to toggle collison, use             [p]                         "
     "                                                                "
     "multiple tiles can be painted into one block.                   "
     "use [F2] to save the level and [F3] to load it back.            "
@@ -138,7 +139,7 @@ void initgame()
     for(int i=0;i<LEVELWIDTH*LEVELHEIGHT*LEVELDEPTH;i++)
     {
         //collisionLevel[i]=level[i].size()>0?1:0;
-        collisionLevel[i]=(level[i].isPassable)?1:0;
+        collisionLevel[i]=(level[i].hasCollision)?1:0;
     }
 
     // reset the druid
@@ -350,14 +351,26 @@ int renderloop()
         }
 
         // render the level
-        bool passable = false;
+        bool collides = false;
 
         for(int z=0;z<LEVELDEPTH;z++)
         for(int y=0;y<LEVELHEIGHT;y++)
         for(int x=0;x<LEVELWIDTH;x++)
         {
-            passable = level[x+y*LEVELWIDTH+z*LEVELWIDTH*LEVELHEIGHT].isPassable;
+            collides = level[x+y*LEVELWIDTH+z*LEVELWIDTH*LEVELHEIGHT].hasCollision;
             LevelTile::iterator li;
+
+            if (level[x+y*LEVELWIDTH+z*LEVELWIDTH*LEVELHEIGHT].size() == 0 && gamestate==EDITOR && collides) {
+                modelviewMatrix = cameraMatrix
+                    * Matrix::translation(Vector((float)x*2.0f,(float)y*2.0f,(float)z*2.0f))
+                    * Matrix::rotation(1, 0)
+                    * Matrix::rotation(0, PI*1.5f);
+
+                glUniformMatrix4fv(teststate->getUniformLocation(1), 1, false, modelviewMatrix.e);
+
+                imagemap["Material_003"].use(0);
+                collada->geometries["selectbox"].meshes[0].array.draw();
+            }
 
             for(li=level[x+y*LEVELWIDTH+z*LEVELWIDTH*LEVELHEIGHT].begin();
                 li!=level[x+y*LEVELWIDTH+z*LEVELWIDTH*LEVELHEIGHT].end();++li)
@@ -374,7 +387,7 @@ int renderloop()
 
                 for(mp=g.meshes.begin();mp!=g.meshes.end();++mp)
                 {
-                    if (gamestate==EDITOR && passable)
+                    if (gamestate==EDITOR && collides)
                         imagemap["Material_003"].use(0);
                     else
                         imagemap[(mp->second).material].use(0);
@@ -382,6 +395,8 @@ int renderloop()
                     (mp->second).array.draw();
                 }
             }
+
+
         }
 
         Text::update();
@@ -431,8 +446,8 @@ int keydown(int keycode)
         if (keycode=='S'+('d'<<8)) if (editorcursor.position[1]>0)   editorcursor.position[1]--;
         if (keycode=='W'+('d'<<8)) if (editorcursor.position[1]<LEVELHEIGHT-1) editorcursor.position[1]++;
 
-        if (keycode=='R'+('d'<<8)) if (editorcursor.position[2]>0)   editorcursor.position[2]--;
-        if (keycode=='F'+('d'<<8)) if (editorcursor.position[2]<LEVELDEPTH-1)  editorcursor.position[2]++;
+        if (keycode=='Q'+('d'<<8)) if (editorcursor.position[2]>0)   editorcursor.position[2]--;
+        if (keycode=='E'+('d'<<8)) if (editorcursor.position[2]<LEVELDEPTH-1)  editorcursor.position[2]++;
 
         if (keycode==VK_LEFT+('d'<<8)) editorcursor.rotation--;
         if (keycode==VK_RIGHT+('d'<<8)) editorcursor.rotation++;
@@ -471,7 +486,7 @@ int keydown(int keycode)
         if (keycode=='P'+('d'<<8))
         {
             LevelTile* currentTile = &level[editorcursor.position[0]+editorcursor.position[1]*LEVELWIDTH+editorcursor.position[2]*LEVELWIDTH*LEVELHEIGHT];
-            currentTile->isPassable = !currentTile->isPassable;
+            currentTile->hasCollision = !currentTile->hasCollision;
 
         }
 
@@ -552,7 +567,7 @@ void savelevel()
 
     for (i=0;i<LEVELWIDTH*LEVELHEIGHT*LEVELDEPTH;i++)
     {
-        f << level[i].size() << " " << level[i].isPassable << " ";;
+        f << level[i].size() << " " << level[i].hasCollision << " ";;
 
         for (p=level[i].begin();p!=level[i].end();++p)
         {
@@ -575,7 +590,7 @@ void loadlevel()
 
     for (i=0;i<LEVELWIDTH*LEVELHEIGHT*LEVELDEPTH;i++)
     {
-        f >> n >> level[i].isPassable;
+        f >> n >> level[i].hasCollision;
 
         level[i].clear();
 

@@ -19,7 +19,7 @@ class LevelTileDef
 class LevelTile : public std::list<LevelTileDef>
 {
     public:
-        bool isPassable = false;
+        bool hasCollision = false;
 };
 
 //typedef std::list<LevelTileDef> LevelTile;
