@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.63.0 r46461:46487M</authoring_tool>
     </contributor>
-    <created>2013-02-24T18:10:57</created>
-    <modified>2013-02-24T18:10:57</modified>
+    <created>2013-02-25T13:29:44</created>
+    <modified>2013-02-25T13:29:44</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -111,7 +111,7 @@
               <color sid="ambient">0 0 0 1</color>
             </ambient>
             <diffuse>
-              <texture texture="concrete-700_jpg-sampler" texcoord="UVMap"/>
+              <texture texture="concrete-700_jpg-sampler"/>
             </diffuse>
             <index_of_refraction>
               <float sid="index_of_refraction">1</float>
@@ -897,7 +897,7 @@
           </technique_common>
         </source>
         <source id="platform-mesh-map-1">
-          <float_array id="platform-mesh-map-1-array" count="16">0.5000001 1 0 1 0 0.5000001 0.5000001 0.5000002 0.5000002 0.4999999 0 0.5000001 0 1.78814e-7 0.4999998 0</float_array>
+          <float_array id="platform-mesh-map-1-array" count="16">0.0416969 0.03836762 0.4808816 0.0370202 0.482229 0.476205 0.04304414 0.4775524 0.4822288 0.5228183 0.4808816 0.9620031 0.0416969 0.9606556 0.04304409 0.5214711</float_array>
           <technique_common>
             <accessor source="#platform-mesh-map-1-array" count="8" stride="2">
               <param name="S" type="float"/>

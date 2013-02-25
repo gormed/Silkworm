@@ -169,7 +169,7 @@
 	<dlfcn.h>
 	<GL/glx.h>
 
-1361752385 source:c:\devprojects\gitdiesel\silkworm\image.cpp
+1361795141 source:c:\devprojects\gitdiesel\silkworm\image.cpp
 	<GL3/gl3w.h>
 	"log.h"
 	"image.h"
@@ -206,7 +206,7 @@
 	"xml.h"
 	"log.h"
 
-1361751531 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
+1361820865 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
 	<GL3/gl3w.h>
 	<list>
 	"log.h"
@@ -219,6 +219,7 @@
 	"collada.h"
 	"environment.h"
 	"entity.h"
+	"sky.h"
 
 1361491155 c:\devprojects\gitdiesel\silkworm\text.h
 
@@ -256,16 +257,25 @@
 1361628932 c:\devprojects\gitdiesel\silkworm\armature.h
 	"log.h"
 
-1361751990 source:c:\devprojects\gitdiesel\silkworm\environment.cpp
+1361820409 source:c:\devprojects\gitdiesel\silkworm\environment.cpp
 	<GL3/gl3w.h>
 	<stdio.h>
 	"file.h"
 	"xml.h"
 	"environment.h"
 
-1361751221 c:\devprojects\gitdiesel\silkworm\environment.h
+1361800426 c:\devprojects\gitdiesel\silkworm\environment.h
 	<list>
 	"state.h"
 	"array.h"
 	"collada.h"
+
+1361820588 source:c:\devprojects\gitdiesel\silkworm\sky.cpp
+	"file.h"
+	"sky.h"
+
+1361820248 c:\devprojects\gitdiesel\silkworm\sky.h
+	"array.h"
+	"collada.h"
+	"image.h"
 

@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<state>
+
+	<shader type="vertex">
+
+		#version 150
+		
+		uniform mat4 projection;
+		uniform mat4 modelview;
+		
+		in vec4 position;
+		in vec3 normal;
+		in vec2 texcoord;
+		
+		out vec2 tc;
+		
+		void main() {
+			gl_Position = projection * modelview * position;
+			tc = texcoord*vec2(2.0,1.0);
+		}
+			
+	</shader>
+	
+	<shader type="fragment">
+	
+		#version 330
+		
+		uniform sampler2D tex;
+		
+		in vec2 tc;
+		out vec4 frag;
+		
+		void main() { 
+			frag = texture2D(tex,tc);
+		}
+		
+	</shader>
+	
+	<symbol name="position" length="4" />
+	<symbol name="normal" length="3" />
+	<symbol name="texcoord" length="2" />
+	
+	<uniform name="projection" />
+	<uniform name="modelview" />
+	
+</state>

@@ -43,7 +43,7 @@ Environment::Environment()
 
 	state = new State();
 
-	File statefile = File::read("states/simplestate.xml");
+	File statefile = File::read("states/lightmap.xml");
 
 	state->read( statefile );
 	state->link();
@@ -114,6 +114,42 @@ void Environment::render( const Matrix &projection, const Matrix &camera, int li
 
 }
 
+void grow(unsigned char *pixel)
+{
+    // increase filled areas in a lightmap by 1 pixel
+    // to account for wrong colors at face edges
+
+    int x,y,i,j;
+    int ofs[2]={1,LIGHTMAPSIZE};
+
+    for(y=0;y<LIGHTMAPSIZE;y++)
+    for(x=0;x<LIGHTMAPSIZE;x++)
+    {
+        if( pixel[ (y*LIGHTMAPSIZE+x)*4+3 ] == 0 )
+        for(i=0;i<2;i++)
+        {
+            if(pixel[ ((y*LIGHTMAPSIZE+x+ofs[i])&(LIGHTMAPSIZE*LIGHTMAPSIZE-1))*4+3 ] != 0)
+            for(j=0;j<4;j++)
+            {
+                pixel[ (y*LIGHTMAPSIZE+x)*4+j ] = pixel[ ((y*LIGHTMAPSIZE+x+ofs[i])&(LIGHTMAPSIZE*LIGHTMAPSIZE-1))*4+j ];
+            }
+        }
+    }
+
+    for(y=LIGHTMAPSIZE-1;y>=0;y--)
+    for(x=LIGHTMAPSIZE-1;x>=0;x--)
+    {
+        if( pixel[ (y*LIGHTMAPSIZE+x)*4+3 ] == 0 )
+        for(i=0;i<2;i++)
+        {
+            if(pixel[ ((y*LIGHTMAPSIZE+x-ofs[i])&(LIGHTMAPSIZE*LIGHTMAPSIZE-1))*4+3 ] != 0)
+            for(j=0;j<4;j++)
+            {
+                pixel[ (y*LIGHTMAPSIZE+x)*4+j ] = pixel[ ((y*LIGHTMAPSIZE+x-ofs[i])&(LIGHTMAPSIZE*LIGHTMAPSIZE-1))*4+j ];
+            }
+        }
+    }
+}
 
 int Environment::readCachedLightmaps(int bounce, unsigned char *pixel)
 {
@@ -149,9 +185,6 @@ void Environment::bakeLightmaps(int bounce)
     static unsigned char pixel[LIGHTMAPSIZE*LIGHTMAPSIZE*4];
 
     int i,j;
-
-    for(i=0;i<LIGHTMAPSIZE*LIGHTMAPSIZE*4;i++) pixel[i]=0;
-
 
     // count the models
 
@@ -206,12 +239,15 @@ void Environment::bakeLightmaps(int bounce)
 
     for(li=models.begin();li!=models.end();++li)
     {
+        for(i=0;i<LIGHTMAPSIZE*LIGHTMAPSIZE*4;i++) pixel[i]=0;
+
         // iterate through all the meshes in the models geometry
 
         //if (count<50)
 
         for(mp=li->geo->meshes.begin();mp!=li->geo->meshes.end();++mp)
         {
+
             // iterate through all the triangles in each mesh
 
             Mesh &m = (mp->second);
@@ -232,8 +268,8 @@ void Environment::bakeLightmaps(int bounce)
 
                     for(j=0;j<3;j++)
                     {
-                        if(  m.uvs[i*3+j].e[0]<-2.0f||m.uvs[i*3+j].e[0]>2.0f
-                           ||m.uvs[i*3+j].e[1]<-2.0f||m.uvs[i*3+j].e[1]>2.0f) ignore=true;
+                        if(  m.uvs[i*3+j].e[0]<-1.0f||m.uvs[i*3+j].e[0]>2.0f
+                           ||m.uvs[i*3+j].e[1]<-1.0f||m.uvs[i*3+j].e[1]>2.0f) ignore=true;
                     }
 
                     if (ignore)
@@ -251,8 +287,8 @@ void Environment::bakeLightmaps(int bounce)
 
                 // find vertical dimensions of the triangle
 
-                int top=-LIGHTMAPSIZE;
                 int bottom=LIGHTMAPSIZE;
+                int top=0;
 
                 for(j=0;j<3;j++)
                 {
@@ -271,7 +307,7 @@ void Environment::bakeLightmaps(int bounce)
                     // calculate the extents of the span
 
                     int left = LIGHTMAPSIZE;
-                    int right = -LIGHTMAPSIZE;
+                    int right = 0;
 
                     Vector posLeft,posRight;
                     Vector nmlLeft,nmlRight;
@@ -392,17 +428,14 @@ void Environment::bakeLightmaps(int bounce)
 
                         for(int cmp=0;cmp<4;cmp++)
                         {
-
-
                             // normalize intensity range
                             colAcc[cmp]/=(LIGHTMAPRTSIZE*LIGHTMAPRTSIZE);
-
-                            //colAcc[cmp]=255-(255-colAcc[cmp])*(255-colAcc[cmp])/256;
                         }
 
 
+                        // set alpha to 255
 
-                        //colAcc[i%3]=255;
+                        colAcc[3]=0xff;
 
 
                         // as the final step of lightmap rasterization,
@@ -430,6 +463,9 @@ void Environment::bakeLightmaps(int bounce)
         // and the only step left to be done is to create the image object
 
         //if (count==50)for(i=0;i<LIGHTMAPSIZE*LIGHTMAPSIZE*4;i++) pixel[i]=0;
+
+        grow(pixel);
+        grow(pixel);
 
         fwrite(pixel,LIGHTMAPSIZE*LIGHTMAPSIZE*4,1,fcache);
 

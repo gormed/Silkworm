@@ -18,8 +18,8 @@
 
 
 #define ENVLIGHTBOUNCES 1   // how many bounces of light to use when baking lightmaps
-#define LIGHTMAPSIZE 64    // size of each lightmap
-#define LIGHTMAPRTSIZE 64   // size of the lightmap render target
+#define LIGHTMAPSIZE 128     // size of each lightmap
+#define LIGHTMAPRTSIZE 64    // size of the lightmap render target
 
 
 //

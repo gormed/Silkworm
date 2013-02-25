@@ -16,6 +16,7 @@
 
 #include "environment.h"
 #include "entity.h"
+#include "sky.h"
 
 
 int windowwidth=1024,windowheight=768;
@@ -288,9 +289,14 @@ int renderloop()
 
     // initialize modelview and projection matrices
 
-	Matrix projectionMatrix = Matrix::projection(-1.0f,1.0f,-0.75f,0.75f,1.0f,50.0f);
+	Matrix projectionMatrix = Matrix::projection(-1.0f,1.0f,-0.75f,0.75f,1.0f,500.0f);
 	Matrix modelviewMatrix = Matrix::identity();
 	Matrix cameraMatrix = Matrix::identity();
+	Matrix cameraRotationMatrix;
+
+	// intialize sky
+
+	Sky *sky = new Sky();
 
     // load level from level.txt
 
@@ -321,12 +327,11 @@ int renderloop()
                      * Matrix::rotation(0,0.2f)
                      * Matrix::translation(Vector(1.0f,-1.0f,0.0f)-smoothpos);
 
+        cameraRotationMatrix = Matrix::rotation(0,0.2f);
+
 
         // a standard opengl setup
 
-
-        //glCullFace(GL_BACK);
-        //glEnable(GL_CULL_FACE);
 
         glHint(GL_POLYGON_SMOOTH_HINT,GL_NICEST);           // nicest shading
         glEnable(GL_POLYGON_SMOOTH);                        // turn of flat-shading
@@ -341,6 +346,16 @@ int renderloop()
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);   // clear screen
 
         glViewport(0,0,windowwidth,windowheight);
+
+
+        // render background
+
+        glDisable(GL_CULL_FACE);
+
+      	Matrix skyMatrix=cameraMatrix*Matrix::scale(Vector(-300.0f,-400.0f,-300.0f))*Matrix::rotation(0, PI*1.5f);
+        sky->draw(projectionMatrix,skyMatrix);
+
+        glEnable(GL_CULL_FACE);
 
 
         // query the gamepad and mix data with keyboard input
@@ -379,6 +394,8 @@ int renderloop()
 
         Matrix testMatrices[20];
 
+        glCullFace(GL_FRONT);
+
         kathy->armature->animate(testdruid.aniControl.lastframe,testdruid.aniControl.frame,testdruid.aniControl.ip,testMatrices);
 
         kathystate->set();
@@ -392,6 +409,8 @@ int renderloop()
 
         // display the level
 
+        glCullFace(GL_BACK);
+
         env->render(projectionMatrix,cameraMatrix,1);
 
 
@@ -400,6 +419,7 @@ int renderloop()
         frame_hook();
     }
 
+    delete sky;
 
     delete kathy;
     delete kathystate;
