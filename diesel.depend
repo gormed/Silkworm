@@ -142,7 +142,7 @@
 	"resource.h"
 	"matrix.h"
 
-1361634844 source:c:\devprojects\gitdiesel\silkworm\collada.cpp
+1361740548 source:c:\devprojects\gitdiesel\silkworm\collada.cpp
 	<sstream>
 	"xml.h"
 	"collada.h"
@@ -153,7 +153,7 @@
 	<string>
 	"file.h"
 
-1361625409 c:\devprojects\gitdiesel\silkworm\collada.h
+1361732920 c:\devprojects\gitdiesel\silkworm\collada.h
 	"xml.h"
 	"array.h"
 	"state.h"
@@ -169,7 +169,7 @@
 	<dlfcn.h>
 	<GL/glx.h>
 
-1361547612 source:c:\devprojects\gitdiesel\silkworm\image.cpp
+1361752385 source:c:\devprojects\gitdiesel\silkworm\image.cpp
 	<GL3/gl3w.h>
 	"log.h"
 	"image.h"
@@ -179,7 +179,7 @@
 	<iostream>
 	<fstream>
 
-1361489430 c:\devprojects\gitdiesel\silkworm\image.h
+1361735061 c:\devprojects\gitdiesel\silkworm\image.h
 	"resource.h"
 
 1361489430 source:c:\devprojects\gitdiesel\silkworm\log.cpp
@@ -206,7 +206,7 @@
 	"xml.h"
 	"log.h"
 
-1361643085 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
+1361751531 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
 	<GL3/gl3w.h>
 	<list>
 	"log.h"
@@ -217,6 +217,7 @@
 	"matrix.h"
 	"image.h"
 	"collada.h"
+	"environment.h"
 	"entity.h"
 
 1361491155 c:\devprojects\gitdiesel\silkworm\text.h
@@ -224,7 +225,7 @@
 1361545013 c:\devprojects\gitdiesel\silkworm\vector.h
 	<math.h>
 
-1361628932 c:\devprojects\gitdiesel\silkworm\matrix.h
+1361742198 c:\devprojects\gitdiesel\silkworm\matrix.h
 	<math.h>
 	"vector.h"
 
@@ -240,7 +241,7 @@
 1361547217 source:c:\devprojects\gitdiesel\silkworm\xml.cpp
 	"xml.h"
 
-1361642447 source:c:\devprojects\gitdiesel\silkworm\druidentity.cpp
+1361643135 source:c:\devprojects\gitdiesel\silkworm\druidentity.cpp
 	"entity.h"
 
 1361640736 source:c:\devprojects\gitdiesel\silkworm\standardphysicsentity.cpp
@@ -254,4 +255,17 @@
 
 1361628932 c:\devprojects\gitdiesel\silkworm\armature.h
 	"log.h"
+
+1361751990 source:c:\devprojects\gitdiesel\silkworm\environment.cpp
+	<GL3/gl3w.h>
+	<stdio.h>
+	"file.h"
+	"xml.h"
+	"environment.h"
+
+1361751221 c:\devprojects\gitdiesel\silkworm\environment.h
+	<list>
+	"state.h"
+	"array.h"
+	"collada.h"
 

@@ -66,12 +66,13 @@ void Collada::readGeometry(XML &geoxml, XML *skinxml)
 
     int source_enabled;
     int source_total;
+    int source_maxofs;
 
-    std::string source[3];
-    float *source_array[3]={0,0,0};
-    int source_stride[3];
-    int source_count[3];
-    int source_offset[3];
+    std::string source[4];
+    float *source_array[4]={0,0,0,0};
+    int source_stride[4];
+    int source_count[4];
+    int source_offset[4];
 
     int poly_count;
     int poly_count_total;
@@ -143,6 +144,7 @@ void Collada::readGeometry(XML &geoxml, XML *skinxml)
     {
         source_enabled = 0;
         source_total = 0;
+        source_maxofs = 0;
 
         poly_count = 0;
         poly_count_total = 0;
@@ -175,6 +177,8 @@ void Collada::readGeometry(XML &geoxml, XML *skinxml)
                 std::stringstream ofss((p2->second)["offset"]);
                 ofss >> source_offset[0];
 
+                if(source_offset[0]>=source_maxofs) source_maxofs=source_offset[0]+1;
+
                 NodeMap vertices = meshmap[0].get("vertices");
                 for (p3=vertices.begin();p3!=vertices.end();++p3)
                 if("#"+(p3->second)["id"]==(p2->second)["source"])
@@ -200,6 +204,8 @@ void Collada::readGeometry(XML &geoxml, XML *skinxml)
                 std::stringstream ofss((p2->second)["offset"]);
                 ofss >> source_offset[1];
 
+                if(source_offset[1]>=source_maxofs) source_maxofs=source_offset[1]+1;
+
                 source_enabled|=2;  // set flag
                 source_total++;     // count number of sources for calculating memory usage
 
@@ -208,13 +214,18 @@ void Collada::readGeometry(XML &geoxml, XML *skinxml)
 
             if ((p2->second)["semantic"]=="TEXCOORD")
             {
+                int ts = 2;
+                if ((p2->second)["set"]=="1") ts=3;
+
                 std::stringstream ofss((p2->second)["offset"]);
-                ofss >> source_offset[2];
+                ofss >> source_offset[ts];
 
-                source_enabled|=4;  // set flag
-                source_total++;     // count number of sources for calculating memory usage
+                if(source_offset[ts]>=source_maxofs) source_maxofs=source_offset[ts]+1;
 
-                source[2] = (p2->second)["source"];
+                source_enabled|=1<<ts;  // set flag
+                source_total++;         // count number of sources for calculating memory usage
+
+                source[ts] = (p2->second)["source"];
             }
 
         }
@@ -226,7 +237,7 @@ void Collada::readGeometry(XML &geoxml, XML *skinxml)
         // extract the data from the source entries
 
         for(p2=sources.begin();p2!=sources.end();++p2)
-        for(i=0;i<3;i++)
+        for(i=0;i<4;i++)
         if (source_enabled&(1<<i)) // check flag
         if ("#"+(p2->second)["id"]==source[i])
         {
@@ -278,7 +289,22 @@ void Collada::readGeometry(XML &geoxml, XML *skinxml)
         mesh.array.data = new float[finaldata_total*finaldata_elementlength];
         mesh.array.elements = finaldata_total;
 
+        // initialize the offline data for baking
+        // only if vertex, normal, texcoord, and lightmap uv data are all present
+
+        if(source_total==4)
+        {
+            mesh.vertices = new Vector[finaldata_total];
+            mesh.normals = new Vector[finaldata_total];
+            mesh.uvs = new Vector[finaldata_total];
+            // count triangles, not vertices!
+            mesh.nElements = finaldata_total/3;
+        }
+
+        // reset indices
+
         int dataindex=0;
+        int bakedataindex=0;
         int sourceindex=0;
 
         const int assemblerlist[6]={0,1,2,0,2,3};    // 3 entries for triangle, 6 entries for quad
@@ -292,6 +318,7 @@ void Collada::readGeometry(XML &geoxml, XML *skinxml)
             {
 
                 sourceindex=0;
+                bakedataindex=0;
 
                 // loop through polygons
 
@@ -310,9 +337,23 @@ void Collada::readGeometry(XML &geoxml, XML *skinxml)
                             {
                                 // this component is contained in the source
 
-                                int t1=poly_p[ (sourceindex+assemblerlist[l])*source_total + source_offset[i] ];
+                                int t1=poly_p[ (sourceindex+assemblerlist[l])*source_maxofs + source_offset[i] ];
 
-                                mesh.array.data[dataindex]=source_array[i][t1*source_stride[i]+k];
+                                float t2=source_array[i][t1*source_stride[i]+k];
+
+                                mesh.array.data[dataindex]=t2;
+
+                                // generate offline data for baking
+
+                                if(source_total==4)
+                                switch(i)
+                                {
+                                    case 0: mesh.vertices[bakedataindex/3].e[bakedataindex%3]=t2; break;
+                                    case 1: mesh.normals[bakedataindex/3].e[bakedataindex%3]=t2; break;
+                                    case 3: mesh.uvs[bakedataindex/2].e[bakedataindex%2]=t2; break;
+                                }
+
+                                bakedataindex++;
                                 dataindex++;
                             }
                             else
@@ -344,7 +385,7 @@ void Collada::readGeometry(XML &geoxml, XML *skinxml)
                     for(l=0;l<assemblerlistend[poly_vcount[j]-3];l++)
                     {
 
-                        int t1=poly_p[ (sourceindex+assemblerlist[l])*source_total + source_offset[0] ];
+                        int t1=poly_p[ (sourceindex+assemblerlist[l])*source_maxofs + source_offset[0] ];
 
                         mesh.array.data[dataindex]=*(float*)&skin_v[t1]; // conversion to float
 
@@ -418,6 +459,15 @@ void Geometry::draw(ImageMap &materials)
 
     for(mp=meshes.begin();mp!=meshes.end();++mp)
     {
+        if ((mp->second).material=="Material_001")
+        {
+            materials["Material_001"].use(2);
+        }
+        else
+        {
+            materials["black"].use(2);
+        }
+
         materials[(mp->second).material].use(0);
         (mp->second).array.draw();
     }

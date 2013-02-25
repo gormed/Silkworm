@@ -77,6 +77,7 @@ class Matrix
         return r;
     }
 
+
     static Matrix ortho(float left, float right, float bottom, float top, float _far, float _near)
     {
         Matrix r;
@@ -216,6 +217,22 @@ class Matrix
 
         int i;
         for (i=0;i<4;i++)
+        {
+            r.e[i]   = e[i+0 ]*v.e[0]
+                     + e[i+4 ]*v.e[1]
+                     + e[i+8 ]*v.e[2]
+                     + e[i+12]*v.e[3];
+        }
+
+        return r;
+    }
+
+    Vector mul3 (const Vector v) const
+    {
+        Vector r;
+
+        int i;
+        for (i=0;i<3;i++)
         {
             r.e[i]   = e[i+0 ]*v.e[0]
                      + e[i+4 ]*v.e[1]

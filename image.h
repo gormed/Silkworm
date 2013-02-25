@@ -38,6 +38,10 @@ class Image : Resource
 
     Image();
 
+    int getTexture() { return texture; }
+
+    void create(int _width,int _height,int _mode,unsigned char* _data) { width=_width; height=_height; mode=_mode; data=_data; }
+
     virtual void read (File &file);
     virtual void kill ();
 

@@ -1,0 +1,360 @@
+
+
+        // render the level
+
+        for(int z=0;z<LEVELDEPTH;z++)
+        for(int y=0;y<LEVELHEIGHT;y++)
+        for(int x=0;x<LEVELWIDTH;x++)
+        {
+            LevelTile::iterator li;
+
+            for(li=level[x+y*LEVELWIDTH+z*LEVELWIDTH*LEVELHEIGHT].begin();
+                li!=level[x+y*LEVELWIDTH+z*LEVELWIDTH*LEVELHEIGHT].end();++li)
+            {
+                modelviewMatrix = cameraMatrix * Matrix::translation(Vector((float)x*2.0f,(float)y*2.0f,(float)z*2.0f))
+                                * Matrix::rotation(1, (float)li->rotation*(PI*0.5f))
+                                * Matrix::rotation(0, PI*1.5f);
+
+                env->getState()->uniformMatrix("modelview",modelviewMatrix);
+
+                Geometry &g = env->getGeometries()[li->name];
+
+                g.draw(env->getImages());
+
+            }
+        }
+
+		
+		
+		    char editortext[64*32] =
+
+    "welcome to the druid gameplay prototype                         "
+    "you are in level editor mode                                    "
+    "                                                                "
+    "to move the editing cursor, use     [a] [w] [s] [d] [r] [f]     "
+    "to select a tile for painting, use  [arrow up] [arrow down]     "
+    "to rotate the selected tile, use    [arrow left] [arrow right]  "
+    "to paint, use                       [space bar]                 "
+    "to erase, use                       [delete]                    "
+    "                                                                "
+    "multiple tiles can be painted into one block.                   "
+    "use [F2] to save the level and [F3] to load it back.            "
+    "use the mouse for navigation. hit [enter] to compile and play.  ";
+	
+	
+    char gametext[64*32] =
+
+    "hit [enter] to leave play mode                                  ";
+
+	
+	enum GameState { EDITOR, GAME };
+GameState gamestate = EDITOR;
+
+
+
+struct EditorCursor
+{
+    Vector scrollPosition;
+    float lookx,looky;
+    Vector ipPosition;
+    int position[3];
+    float ipRotation;
+    int rotation;
+    GeometryMap::iterator tileused;
+    GeometryMap *tiles;
+};
+
+EditorCursor editorcursor = { Vector(0.0f,0.0f,-20.0f), 0.0f, 0.0f, Vector(0.0f,0.0f,0.0f), { 0, 0, 0 }, 0.0f, 0 };
+
+
+void savelevel();
+
+
+
+   if (gamestate==EDITOR)
+    {
+
+        if (keycode=='A'+('d'<<8)) if (editorcursor.position[0]>0)   editorcursor.position[0]--;
+        if (keycode=='D'+('d'<<8)) if (editorcursor.position[0]<LEVELWIDTH-1) editorcursor.position[0]++;
+
+        if (keycode=='S'+('d'<<8)) if (editorcursor.position[1]>0)   editorcursor.position[1]--;
+        if (keycode=='W'+('d'<<8)) if (editorcursor.position[1]<LEVELHEIGHT-1) editorcursor.position[1]++;
+
+        if (keycode=='R'+('d'<<8)) if (editorcursor.position[2]>0)   editorcursor.position[2]--;
+        if (keycode=='F'+('d'<<8)) if (editorcursor.position[2]<LEVELDEPTH-1)  editorcursor.position[2]++;
+
+        if (keycode==VK_LEFT+('d'<<8)) editorcursor.rotation--;
+        if (keycode==VK_RIGHT+('d'<<8)) editorcursor.rotation++;
+
+        if (keycode==VK_UP+('d'<<8)) if (editorcursor.tileused!=editorcursor.tiles->begin())
+        {
+            --editorcursor.tileused;
+            memset(editortext+64*13,0,64);
+            strcpy(editortext+64*13,(editorcursor.tileused->first).c_str());
+        }
+        if (keycode==VK_DOWN+('d'<<8))
+        {
+            ++editorcursor.tileused;
+            if (editorcursor.tileused==editorcursor.tiles->end()) --editorcursor.tileused;
+            else
+            {
+                memset(editortext+64*13,0,64);
+                strcpy(editortext+64*13,(editorcursor.tileused->first).c_str());
+            }
+        }
+
+        if (keycode==' '+('d'<<8))
+        {
+            LevelTileDef ltd;
+            ltd.name = editorcursor.tileused->first;
+            ltd.rotation = editorcursor.rotation&3;
+
+            level[editorcursor.position[0]+editorcursor.position[1]*LEVELWIDTH+editorcursor.position[2]*LEVELWIDTH*LEVELHEIGHT].push_front(ltd);
+        }
+
+        if (keycode==VK_DELETE+('d'<<8))
+        {
+            level[editorcursor.position[0]+editorcursor.position[1]*LEVELWIDTH+editorcursor.position[2]*LEVELWIDTH*LEVELHEIGHT].clear();
+        }
+
+        if (keycode==VK_F2+('d'<<8)) savelevel();
+        if (keycode==VK_F3+('d'<<8)) loadlevel();
+
+        //if (keycode==VK_RETURN+('d'<<8)) initgame();
+
+    }
+	
+	
+	
+	    static int lx=0,ly=0;
+
+    if (mld) editorcursor.scrollPosition+=Vector((float)(x-lx)*0.01f,(float)(ly-y)*0.01f,0.0f);
+    if (mrd) { editorcursor.lookx+=(float)(x-lx)*0.01f; editorcursor.looky+=(float)(y-ly)*0.01f; }
+
+    lx=x;ly=y;
+
+	
+	
+	
+	
+	
+
+// save the level
+
+void savelevel()
+{
+    LevelTile::iterator p;
+
+    int i;
+
+    std::ofstream f;
+    f.open("level.txt");
+
+    for (i=0;i<LEVELWIDTH*LEVELHEIGHT*LEVELDEPTH;i++)
+    {
+        f << level[i].size() << " ";
+
+        for (p=level[i].begin();p!=level[i].end();++p)
+        {
+            f << p->name << " " << p->rotation << " ";
+        }
+    }
+
+    f.close();
+}
+
+
+
+
+
+bool invMatrix(const float m[16], float invOut[16])
+{
+    // This was lifted from MESA implementation of the GLU library.
+
+    float inv[16], det;
+    int i;
+
+    inv[0] = m[5]  * m[10] * m[15] -
+             m[5]  * m[11] * m[14] -
+             m[9]  * m[6]  * m[15] +
+             m[9]  * m[7]  * m[14] +
+             m[13] * m[6]  * m[11] -
+             m[13] * m[7]  * m[10];
+
+    inv[4] = -m[4]  * m[10] * m[15] +
+              m[4]  * m[11] * m[14] +
+              m[8]  * m[6]  * m[15] -
+              m[8]  * m[7]  * m[14] -
+              m[12] * m[6]  * m[11] +
+              m[12] * m[7]  * m[10];
+
+    inv[8] = m[4]  * m[9] * m[15] -
+             m[4]  * m[11] * m[13] -
+             m[8]  * m[5] * m[15] +
+             m[8]  * m[7] * m[13] +
+             m[12] * m[5] * m[11] -
+             m[12] * m[7] * m[9];
+
+    inv[12] = -m[4]  * m[9] * m[14] +
+               m[4]  * m[10] * m[13] +
+               m[8]  * m[5] * m[14] -
+               m[8]  * m[6] * m[13] -
+               m[12] * m[5] * m[10] +
+               m[12] * m[6] * m[9];
+
+    inv[1] = -m[1]  * m[10] * m[15] +
+              m[1]  * m[11] * m[14] +
+              m[9]  * m[2] * m[15] -
+              m[9]  * m[3] * m[14] -
+              m[13] * m[2] * m[11] +
+              m[13] * m[3] * m[10];
+
+    inv[5] = m[0]  * m[10] * m[15] -
+             m[0]  * m[11] * m[14] -
+             m[8]  * m[2] * m[15] +
+             m[8]  * m[3] * m[14] +
+             m[12] * m[2] * m[11] -
+             m[12] * m[3] * m[10];
+
+    inv[9] = -m[0]  * m[9] * m[15] +
+              m[0]  * m[11] * m[13] +
+              m[8]  * m[1] * m[15] -
+              m[8]  * m[3] * m[13] -
+              m[12] * m[1] * m[11] +
+              m[12] * m[3] * m[9];
+
+    inv[13] = m[0]  * m[9] * m[14] -
+              m[0]  * m[10] * m[13] -
+              m[8]  * m[1] * m[14] +
+              m[8]  * m[2] * m[13] +
+              m[12] * m[1] * m[10] -
+              m[12] * m[2] * m[9];
+
+    inv[2] = m[1]  * m[6] * m[15] -
+             m[1]  * m[7] * m[14] -
+             m[5]  * m[2] * m[15] +
+             m[5]  * m[3] * m[14] +
+             m[13] * m[2] * m[7] -
+             m[13] * m[3] * m[6];
+
+    inv[6] = -m[0]  * m[6] * m[15] +
+              m[0]  * m[7] * m[14] +
+              m[4]  * m[2] * m[15] -
+              m[4]  * m[3] * m[14] -
+              m[12] * m[2] * m[7] +
+              m[12] * m[3] * m[6];
+
+    inv[10] = m[0]  * m[5] * m[15] -
+              m[0]  * m[7] * m[13] -
+              m[4]  * m[1] * m[15] +
+              m[4]  * m[3] * m[13] +
+              m[12] * m[1] * m[7] -
+              m[12] * m[3] * m[5];
+
+    inv[14] = -m[0]  * m[5] * m[14] +
+               m[0]  * m[6] * m[13] +
+               m[4]  * m[1] * m[14] -
+               m[4]  * m[2] * m[13] -
+               m[12] * m[1] * m[6] +
+               m[12] * m[2] * m[5];
+
+    inv[3] = -m[1] * m[6] * m[11] +
+              m[1] * m[7] * m[10] +
+              m[5] * m[2] * m[11] -
+              m[5] * m[3] * m[10] -
+              m[9] * m[2] * m[7] +
+              m[9] * m[3] * m[6];
+
+    inv[7] = m[0] * m[6] * m[11] -
+             m[0] * m[7] * m[10] -
+             m[4] * m[2] * m[11] +
+             m[4] * m[3] * m[10] +
+             m[8] * m[2] * m[7] -
+             m[8] * m[3] * m[6];
+
+    inv[11] = -m[0] * m[5] * m[11] +
+               m[0] * m[7] * m[9] +
+               m[4] * m[1] * m[11] -
+               m[4] * m[3] * m[9] -
+               m[8] * m[1] * m[7] +
+               m[8] * m[3] * m[5];
+
+    inv[15] = m[0] * m[5] * m[10] -
+              m[0] * m[6] * m[9] -
+              m[4] * m[1] * m[10] +
+              m[4] * m[2] * m[9] +
+              m[8] * m[1] * m[6] -
+              m[8] * m[2] * m[5];
+
+    det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
+
+    if (det == 0)
+        return false;
+
+    det = 1.0 / det;
+
+    for (i = 0; i < 16; i++)
+        invOut[i] = inv[i] * det;
+
+    return true;
+}
+
+
+
+        if (gamestate==EDITOR)
+        {
+            // editor mode
+
+            // display the cursor
+
+            modelviewMatrix = cameraMatrix * Matrix::translation(editorcursor.ipPosition)
+                            * Matrix::rotation(1, editorcursor.ipRotation)
+                            * Matrix::rotation(0, PI*1.5f);
+
+            env->getState()->uniformMatrix("modelview",modelviewMatrix);
+
+            env->getImages()["Material_001"].use(0);
+            env->getGeometries()["selectbox"].meshes[0].array.draw();
+
+
+
+            // display the tile that can be painted
+
+            (editorcursor.tileused->second).draw(env->getImages());
+
+        }
+		
+		
+		
+		            // display the druid's bounding box
+
+            //teststate->uniformMatrix("modelview",modelviewMatrix);
+
+            //imagemap["Material_001"].use(0);
+            //env->geometries()["selectbox"].meshes[0].array.draw();
+
+			
+			
+			    // initialize the cursor
+
+    editorcursor.tileused=env->getGeometries().begin();
+    editorcursor.tiles=&env->getGeometries();
+
+	
+	        // animate the editor cursor
+
+        for (i=0;i<3;i++) editorcursor.ipPosition.e[i] = editorcursor.ipPosition.e[i]*0.8f + (float)editorcursor.position[i]*(2.0f*0.2f);
+        editorcursor.ipRotation = editorcursor.ipRotation*0.8f + (float)editorcursor.rotation*(PI*2.0f*0.25f*0.2f);
+		
+		
+		
+		        if (gamestate==EDITOR)
+        {
+
+            cameraMatrix = Matrix::translation(Vector(0,0,editorcursor.scrollPosition.e[2]))
+                         * Matrix::rotation(0,editorcursor.looky)
+                         * Matrix::rotation(1,editorcursor.lookx)
+                         * Matrix::translation(Vector(editorcursor.scrollPosition.e[0],editorcursor.scrollPosition.e[1],0));
+
+        }
+        else

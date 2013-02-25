@@ -11,14 +11,15 @@
 		in vec4 position;
 		in vec3 normal;
 		in vec2 texcoord;
+		in vec2 lightmapuv;
 		
 		out vec2 tc;
-		out float light;
+		out vec2 luv;
 		
 		void main() {
 			gl_Position = projection * modelview * position;
 			tc = texcoord;
-			light = (normal.z+normal.y)*0.25+0.5;
+			luv = lightmapuv;
 		}
 			
 	</shader>
@@ -28,15 +29,19 @@
 		#version 330
 		
 		uniform sampler2D tex;
+		uniform sampler2D lightmap;
+		uniform sampler2D emissive;
 		
 		in vec2 tc;
-		in float light;
+		in vec2 luv;
 		out vec4 frag;
 		
 		void main() { 
-			vec4 t = texture2D(tex,tc)*vec4(light,light,light,1.0f);
+			vec4 t = texture2D(tex,tc);
 			if (0.2 > t.w) discard;
-			frag = t;
+			vec4 lt = texture2D(lightmap,luv);
+			float l = dot(lt.xyz,lt.xyz);
+			frag = t * l + texture2D(emissive,tc);
 		}
 		
 	</shader>
@@ -47,6 +52,7 @@
 	<symbol name="position" length="4" />
 	<symbol name="normal" length="3" />
 	<symbol name="texcoord" length="2" />
+	<symbol name="lightmapuv" length="2" />
 	
 	<uniform name="projection" />
 	<uniform name="modelview" />

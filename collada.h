@@ -24,6 +24,12 @@ typedef std::map<std::string, Geometry> GeometryMap;
 typedef std::map<int, Mesh> MeshMap;
 typedef std::map<std::string, Image> ImageMap;
 
+//
+// TODO
+// destruction of the Collada object will not
+// delete the geometries / meshes / etc !!!!
+//
+
 
 // a Collada object loads all the geometry info from a Collada file
 // and creates and links the corresponding opengl vertex arrays
@@ -81,6 +87,15 @@ public:
 
 struct Mesh
 {
+    // keep info about all the triangles in the mesh
+    // (used in the environment code for lightmap baking)
+
+    int nElements;
+    Vector *vertices;
+    Vector *normals;
+    Vector *uvs;
+
+
     Array array;
     std::string material;
 };

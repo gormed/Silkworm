@@ -2,6 +2,9 @@
 
 <images>
 
+	<image name="black"      source="images/black.png" />
+	<image name="checkers"      source="images/checkers.png" />
+
 	<image name="Material"      source="images/concrete.png" />
 	<image name="Material_001"  source="images/orange.png" />
 	<image name="Material_003"  source="images/green.png" />
