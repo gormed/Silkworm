@@ -1,4 +1,13 @@
 
+/*
+
+    environment.cpp
+
+    class for static environments
+
+*/
+
+
 #include <GL3/gl3w.h>
 #include <stdio.h>
 
@@ -81,7 +90,7 @@ void Environment::render( const Matrix &projection, const Matrix &camera, int li
 
     // iterate through models and draw each
 
-    EnvironmentModelList::iterator li;
+    EnvironmentModelInstanceList::iterator li;
     int i=0;
 
     for(li=models.begin();li!=models.end();++li)
@@ -114,7 +123,7 @@ int Environment::readCachedLightmaps(int bounce, unsigned char *pixel)
 
     // iterate through all the models
 
-    EnvironmentModelList::iterator li;
+    EnvironmentModelInstanceList::iterator li;
     MeshMap::iterator mp;
 
     int count=0;
@@ -190,7 +199,7 @@ void Environment::bakeLightmaps(int bounce)
 
     // iterate through all the models
 
-    EnvironmentModelList::iterator li;
+    EnvironmentModelInstanceList::iterator li;
     MeshMap::iterator mp;
 
     count=0;

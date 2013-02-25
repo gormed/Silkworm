@@ -1,4 +1,12 @@
 
+/*
+
+    environment.h
+
+    class for static environments
+
+*/
+
 #ifndef ENVIRONMENT_H
 #define ENVIRONMENT_H
 
@@ -19,7 +27,7 @@
 // this allows multiple instances of the same Geometry
 //
 
-struct EnvironmentModel
+struct EnvironmentModelInstance
 {
     Matrix transform;
     Matrix rotation;
@@ -27,7 +35,7 @@ struct EnvironmentModel
 
 };
 
-typedef std::list<EnvironmentModel> EnvironmentModelList;
+typedef std::list<EnvironmentModelInstance> EnvironmentModelInstanceList;
 
 //
 // environment class
@@ -44,7 +52,7 @@ private:
     State *state;
     ImageMap images;
 
-    EnvironmentModelList models;
+    EnvironmentModelInstanceList models;
 
     Image *lightmaps;
 
@@ -60,7 +68,7 @@ public:
 
     GeometryMap& getGeometries() { return collada->geometries; }
 
-    void addModel( EnvironmentModel &model) { models.push_front(model); }
+    void addModel( EnvironmentModelInstance &model) { models.push_front(model); }
 
     void render(const Matrix &projection, const Matrix &modelview, int lightmap);
 

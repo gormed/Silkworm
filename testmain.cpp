@@ -162,7 +162,7 @@ void initenvironment(Environment *env)
         for(li=level[x+y*LEVELWIDTH+z*LEVELWIDTH*LEVELHEIGHT].begin();
             li!=level[x+y*LEVELWIDTH+z*LEVELWIDTH*LEVELHEIGHT].end();++li)
         {
-            EnvironmentModel model;
+            EnvironmentModelInstance model;
             model.transform = Matrix::translation(Vector((float)x*2.0f,(float)y*2.0f,(float)z*2.0f))
                             * Matrix::rotation(1, (float)li->rotation*(PI*0.5f))
                             * Matrix::rotation(0, PI*1.5f); // coordinate system transform hack (z<->y);
@@ -309,13 +309,17 @@ int renderloop()
     while (!quit)
     if (!system_hook(&quit))    // quit will become true if the os wants the application to be closed
     {
+        static Vector smoothvel=Vector(0,0,0);
+        smoothvel=smoothvel*0.8f+testdruid.vel*0.2f;
+        static Vector smoothpos=Vector(0,0,0);
+        smoothpos=smoothpos*0.8f+(testdruid.pos+smoothvel*10.0f)*0.2f;
 
 
         // recalculate camera matrix
 
-        cameraMatrix = Matrix::translation(Vector(0.0f,0.0f,-5.0f))
+        cameraMatrix = Matrix::translation(Vector(0.0f,0.0f,-3.0f-sqrtf(smoothvel.length2())*10.0f))
                      * Matrix::rotation(0,0.2f)
-                     * Matrix::translation(Vector(1.0f,-2.0f,0.0f)-testdruid.pos);
+                     * Matrix::translation(Vector(1.0f,-1.0f,0.0f)-smoothpos);
 
 
         // a standard opengl setup
