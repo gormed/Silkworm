@@ -18,6 +18,7 @@
 #include "entity.h"
 #include "sky.h"
 #include "post.h"
+#include "shadowmap.h"
 
 
 int windowwidth=1024,windowheight=768;
@@ -223,8 +224,29 @@ void initgame(TilesetMap &tileset)
 
 }
 
+void renderani(Collada *ani, State *anistate, Matrix &modelviewMatrix, Matrix &projectionMatrix)
+{
+    Matrix testMatrices[20];
 
-void renderscene(Matrix &cameraMatrix, Matrix &projectionMatrix, Sky *sky, Collada *kathy, State *kathystate, Environment *env)
+    glCullFace(GL_FRONT);
+
+    ani->armature->animate(testdruid.aniControl.lastframe,testdruid.aniControl.frame,testdruid.aniControl.ip,testMatrices);
+
+    anistate->set();
+
+    anistate->uniformMatrix("projection",projectionMatrix);
+    anistate->uniformMatrix("modelview",modelviewMatrix* Matrix::scale(Vector(0.07f,0.07f,0.07f)) ); // the model is much to large
+    anistate->uniformMatrix("bonematrix",testMatrices,20);
+
+    ani->geometries["Cube.004"].meshes[0].array.draw();
+
+    glCullFace(GL_BACK);
+
+}
+
+void renderscene(Matrix &cameraMatrix, Matrix &projectionMatrix, Sky *sky,
+                 Collada *kathy, State *kathystate, Environment *env,
+                 Matrix &shadowModelviewMatrix, Matrix &shadowProjectionMatrix, Shadowmap *shadowmap)
 {
     Matrix modelviewMatrix;
 
@@ -238,7 +260,7 @@ void renderscene(Matrix &cameraMatrix, Matrix &projectionMatrix, Sky *sky, Colla
     glEnable(GL_CULL_FACE);
 
 
-    modelviewMatrix = cameraMatrix * Matrix::translation(testdruid.pos+Vector(-1.0f,-0.9f-0.2f+testdruid.aniControl.positionoffset,-1.0f))
+    modelviewMatrix = cameraMatrix * Matrix::translation(testdruid.pos+Vector(-1.0f,-0.9f-0.3f+testdruid.aniControl.positionoffset,-1.0f))
                      /* * Matrix::scale((testdruid.bbb-testdruid.bba)*0.5f) */
                     * Matrix::rotation(1, testdruid.aniControl.rotation)
                     * Matrix::rotation(0, PI*1.5f);
@@ -246,26 +268,15 @@ void renderscene(Matrix &cameraMatrix, Matrix &projectionMatrix, Sky *sky, Colla
 
     // display the test animation
 
-    Matrix testMatrices[20];
+    renderani(kathy,kathystate,modelviewMatrix,projectionMatrix);
 
-    glCullFace(GL_FRONT);
-
-    kathy->armature->animate(testdruid.aniControl.lastframe,testdruid.aniControl.frame,testdruid.aniControl.ip,testMatrices);
-
-    kathystate->set();
-
-    kathystate->uniformMatrix("projection",projectionMatrix);
-    kathystate->uniformMatrix("modelview",modelviewMatrix* Matrix::scale(Vector(0.07f,0.07f,0.07f)) ); // the model is much to large
-    kathystate->uniformMatrix("bonematrix",testMatrices,20);
-
-    kathy->geometries["Cube.004"].meshes[0].array.draw();
 
 
     // display the level
 
-    glCullFace(GL_BACK);
 
-    env->render(projectionMatrix,cameraMatrix,1);
+
+    env->renderShadowed(projectionMatrix,cameraMatrix,shadowProjectionMatrix,shadowModelviewMatrix,shadowmap->getDepthImage(),1);
 }
 
 
@@ -350,6 +361,8 @@ int renderloop()
 	post[0] = new Post(1024,"states/vblur.xml");
 	post[1] = new Post(256,"states/hblur.xml");
 
+	Shadowmap *shadowmap=new Shadowmap();
+
     // load level from level.txt
 
     loadlevel();
@@ -418,6 +431,32 @@ int renderloop()
         glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);   // standard blending
 
 
+        shadowmap->begin();
+
+        glClearColor(1.0f,1.0f,1.0f,1.0f);
+        glClearDepth(1.0f);                                 // z for screen clear
+        glDepthMask(1);                                     // depth write on
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);                       // clear screen
+
+        Matrix shadowproj=Matrix::projection(-1.0f,1.0f,-1.0f,1.0f,4.0f,20.0f);
+        Matrix shadowmview=Matrix::translation(Vector(0.0f,0.0f,-8.0f))
+                         * Matrix::rotation(0,PI*0.2f)
+                         * Matrix::translation(Vector(0.0f,-1.0f,0.0f))
+
+                         * Matrix::rotation(1, testdruid.aniControl.rotation + PI )
+                         * Matrix::rotation(0, PI*1.5f);
+
+        renderani(kathy,&shadowmap->state,shadowmview,shadowproj);
+
+
+        shadowmview = Matrix::translation(Vector(0.0f,0.0f,-2.0f))
+                         * Matrix::rotation(0,PI*0.2f)
+                         * Matrix::translation(Vector(0.0f,-1.0f,0.0f))
+                         * Matrix::rotation(1, PI )
+                         * Matrix::translation(Vector(0,0,0)-testdruid.pos-Vector(-1.0f,-0.9f-0.3f+testdruid.aniControl.positionoffset,-1.0f));
+
+
+        shadowmap->end();
 
 
         post[0]->begin();
@@ -426,7 +465,7 @@ int renderloop()
         glDepthMask(1);                                     // depth write on
         glClear(GL_DEPTH_BUFFER_BIT);                       // clear screen
 
-        renderscene(cameraMatrix,projectionMatrix,sky,kathy,kathystate,env);
+        renderscene(cameraMatrix,projectionMatrix,sky,kathy,kathystate,env,shadowmview,shadowproj,shadowmap);
 
         post[0]->end();
 
@@ -443,7 +482,7 @@ int renderloop()
         glClear(GL_DEPTH_BUFFER_BIT);                       // clear screen
 
 
-        renderscene(cameraMatrix,projectionMatrix,sky,kathy,kathystate,env);
+        renderscene(cameraMatrix,projectionMatrix,sky,kathy,kathystate,env,shadowmview,shadowproj,shadowmap);
 
 
         glBlendFunc(GL_ONE,GL_ONE);
@@ -454,6 +493,8 @@ int renderloop()
 
         frame_hook();
     }
+
+    delete shadowmap;
 
     delete post[0];
     delete post[1];

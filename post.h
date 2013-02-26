@@ -13,30 +13,22 @@
 
 #include "state.h"
 #include "array.h"
-#include "image.h"
+#include "rendertarget.h"
 
-class Post
+class Post : public RenderTarget
 {
 private:
 
     State state;
     Array array;
 
-    Image RTcolor;
-    Image RTdepth;
-
-    int RT;
-    int RTsize;
-
 public:
 
-    Post(int RTsize, char *stateFilename);
+    Post(int _RTsize, char *stateFilename);
     ~Post();
 
-    void begin();
-    void end();
-
     void draw(float targetwidth, float targetheight, float sourcewidth, float sourceheight);
+
 
 };
 

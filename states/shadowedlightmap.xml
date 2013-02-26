@@ -1,0 +1,78 @@
+<?xml version="1.0" ?>
+<state>
+
+	<shader type="vertex">
+
+		#version 150
+		
+		uniform mat4 projection;
+		uniform mat4 modelview;
+		
+		uniform mat4 shadowprojection;
+		uniform mat4 shadowmodelview;
+		
+		in vec4 position;
+		in vec3 normal;
+		in vec2 texcoord;
+		in vec2 lightmapuv;
+		
+		out vec2 tc;
+		out vec2 luv;
+		out vec4 sp;
+		
+		void main() {
+			gl_Position = projection * modelview * position;
+			sp = shadowprojection * shadowmodelview * position;
+			tc = texcoord;
+			luv = lightmapuv;
+		}
+			
+	</shader>
+	
+	<shader type="fragment">
+	
+		#version 330
+		
+		uniform sampler2D tex;
+		uniform sampler2D lightmap;
+		uniform sampler2D emissive;
+		uniform sampler2D shadowmap;
+		
+		in vec2 tc;
+		in vec2 luv;
+		in vec4 sp;
+		out vec4 frag;
+		
+		void main() { 
+			vec4 t = texture2D(tex,tc);
+			if (0.2 > t.w) discard;
+			vec4 lt = texture2D(lightmap,luv);
+			lt.x=1.0-pow(1.0-lt.x,4.0);
+			lt.y=1.0-pow(1.0-lt.y,4.0);
+			lt.z=1.0-pow(1.0-lt.z,4.0);
+			lt=lt*2.0-0.4;
+			frag = t * lt + texture2D(emissive,tc);
+			
+			if (sp.w>2.0)
+			{
+				frag *= min(texture2D(shadowmap,sp.xy*0.0625+0.5)+(sp.w-2.0)*0.5,1.0);
+			}
+		}
+		
+	</shader>
+	
+	<flag name="earlyz" />
+	<flag name="zwrite" />
+	
+	<symbol name="position" length="4" />
+	<symbol name="normal" length="3" />
+	<symbol name="texcoord" length="2" />
+	<symbol name="lightmapuv" length="2" />
+	
+	<uniform name="projection" />
+	<uniform name="modelview" />
+	
+	<uniform name="shadowprojection" />
+	<uniform name="shadowmodelview" />
+	
+</state>

@@ -10,29 +10,9 @@
 #include "file.h"
 #include "post.h"
 
-Post::Post(int _RTsize, char *stateFilename)
+Post::Post(int _RTsize, char *stateFilename) : RenderTarget(_RTsize)
 {
     RTsize=_RTsize;
-
-    // create the render target for the effect input
-
-    RTcolor.create ( RTsize, RTsize, Image::RGBA, NULL );
-    RTdepth.create ( RTsize, RTsize, Image::DEPTH, NULL );
-
-    RTcolor.link();
-
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-
-    RTdepth.link();
-
-    glGenFramebuffers(1, (GLuint*)&RT);
-    glBindFramebuffer(GL_FRAMEBUFFER, RT);
-
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,  GL_TEXTURE_2D, RTdepth.getTexture(), 0);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, RTcolor.getTexture(), 0);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // create the state and array for rendering the effect
 
@@ -55,26 +35,10 @@ Post::Post(int _RTsize, char *stateFilename)
 
 Post::~Post()
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    RTcolor.unlink();
-    RTdepth.unlink();
-
-    glDeleteFramebuffers(1,(GLuint*)&RT);
-
     state.unlink();
 }
 
-void Post::begin()
-{
-    glBindFramebuffer(GL_FRAMEBUFFER, RT);
-    glViewport(0,0,RTsize,RTsize);
-}
 
-void Post::end()
-{
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
 
 void Post::draw(float targetwidth, float targetheight, float sourcewidth, float sourceheight)
 {

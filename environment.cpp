@@ -39,7 +39,7 @@ Environment::Environment()
     }
 
 
-    // initialise an opengl render state defined in simplestate.xml
+    // initialise an opengl render state
 
 	state = new State();
 
@@ -47,6 +47,13 @@ Environment::Environment()
 
 	state->read( statefile );
 	state->link();
+
+	shadowedState = new State();
+
+	File shadowedStatefile = File::read("states/shadowedlightmap.xml");
+
+	shadowedState->read( shadowedStatefile );
+	shadowedState->link();
 
 
     // load the models from the tileset.dae collada file
@@ -68,6 +75,7 @@ Environment::~Environment()
     delete state;
     delete collada;
 }
+
 
 void Environment::render( const Matrix &projection, const Matrix &camera, int lightmap )
 {
@@ -105,6 +113,65 @@ void Environment::render( const Matrix &projection, const Matrix &camera, int li
         }
 
         //images["checkers"].use(1);
+
+
+        (li->geo)->draw(images);
+
+        i++;
+    }
+
+}
+
+
+void Environment::renderShadowed( const Matrix &projection, const Matrix &camera,
+                          const Matrix &shadowProjection, const Matrix &shadowCamera,
+                          Image *shadowmap, int lightmap )
+{
+    Matrix modelview;
+    Matrix shadowModelview;
+
+    // set rendering state
+
+    shadowedState->set();
+
+    // load the projection matrix
+
+    shadowedState->uniformMatrix("projection",projection);
+    shadowedState->uniformMatrix("shadowprojection",shadowProjection);
+
+    // use texture unit 1 for the lightmaps
+
+    glUniform1i(glGetUniformLocation(shadowedState->program,"lightmap"),1);
+    glUniform1i(glGetUniformLocation(shadowedState->program,"emissive"),2);
+    glUniform1i(glGetUniformLocation(shadowedState->program,"shadowmap"),3);
+
+    images["black"].use(1);
+
+    shadowmap->use(3);
+
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    //images["checkers"].use(3);
+
+
+    // iterate through models and draw each
+
+    EnvironmentModelInstanceList::iterator li;
+    int i=0;
+
+    for(li=models.begin();li!=models.end();++li)
+    {
+        modelview = camera * (li->transform);
+        shadowModelview = shadowCamera * (li->transform);
+
+        shadowedState->uniformMatrix("modelview",modelview);
+        shadowedState->uniformMatrix("shadowmodelview",shadowModelview);
+
+        if (lightmap>=0)
+        {
+            lightmaps[i].use(1);
+        }
+
 
 
         (li->geo)->draw(images);

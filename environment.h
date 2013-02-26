@@ -50,6 +50,7 @@ private:
     Collada *collada;
 
     State *state;
+    State *shadowedState;
     ImageMap images;
 
     EnvironmentModelInstanceList models;
@@ -71,6 +72,9 @@ public:
     void addModel( EnvironmentModelInstance &model) { models.push_front(model); }
 
     void render(const Matrix &projection, const Matrix &modelview, int lightmap);
+    void renderShadowed(const Matrix &projection, const Matrix &modelview,
+                        const Matrix &shadowProjection, const Matrix &shadowCamera,
+                        Image *shadowmap, int lightmap);
 
     void bakeLightmaps(int bounce);
 

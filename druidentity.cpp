@@ -314,7 +314,7 @@ void DruidEntity::control(int *keyStates, int *lastKeyStates)
         }
         else
         {
-            aniControl.positionoffset = cosf(((float)(aniControl.frame-2)+aniControl.ip)*(PI*2.0f/3.0f))*0.08f;
+            aniControl.positionoffset = cosf(((float)(aniControl.frame-2)+aniControl.ip)*(PI*2.0f/3.0f))*0.08f-0.1f;
 
             // when speeding, go faster
 

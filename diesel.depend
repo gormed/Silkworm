@@ -206,7 +206,7 @@
 	"xml.h"
 	"log.h"
 
-1361882136 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
+1361906030 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
 	<GL3/gl3w.h>
 	<list>
 	"log.h"
@@ -221,6 +221,7 @@
 	"entity.h"
 	"sky.h"
 	"post.h"
+	"shadowmap.h"
 
 1361491155 c:\devprojects\gitdiesel\silkworm\text.h
 
@@ -243,7 +244,7 @@
 1361547217 source:c:\devprojects\gitdiesel\silkworm\xml.cpp
 	"xml.h"
 
-1361643135 source:c:\devprojects\gitdiesel\silkworm\druidentity.cpp
+1361905347 source:c:\devprojects\gitdiesel\silkworm\druidentity.cpp
 	"entity.h"
 
 1361640736 source:c:\devprojects\gitdiesel\silkworm\standardphysicsentity.cpp
@@ -258,14 +259,14 @@
 1361628932 c:\devprojects\gitdiesel\silkworm\armature.h
 	"log.h"
 
-1361820409 source:c:\devprojects\gitdiesel\silkworm\environment.cpp
+1361904238 source:c:\devprojects\gitdiesel\silkworm\environment.cpp
 	<GL3/gl3w.h>
 	<stdio.h>
 	"file.h"
 	"xml.h"
 	"environment.h"
 
-1361800426 c:\devprojects\gitdiesel\silkworm\environment.h
+1361907532 c:\devprojects\gitdiesel\silkworm\environment.h
 	<list>
 	"state.h"
 	"array.h"
@@ -280,12 +281,27 @@
 	"collada.h"
 	"image.h"
 
-1361881512 source:c:\devprojects\gitdiesel\silkworm\post.cpp
+1361900822 source:c:\devprojects\gitdiesel\silkworm\post.cpp
 	"file.h"
 	"post.h"
 
-1361881512 c:\devprojects\gitdiesel\silkworm\post.h
+1361902519 c:\devprojects\gitdiesel\silkworm\post.h
 	"state.h"
 	"array.h"
+	"rendertarget.h"
+
+1361902780 c:\devprojects\gitdiesel\silkworm\rendertarget.h
 	"image.h"
+
+1361903749 source:c:\devprojects\gitdiesel\silkworm\rendertarget.cpp
+	<GL3/gl3w.h>
+	"rendertarget.h"
+
+1361904626 source:c:\devprojects\gitdiesel\silkworm\shadowmap.cpp
+	<GL3/gl3w.h>
+	"shadowmap.h"
+
+1361903048 c:\devprojects\gitdiesel\silkworm\shadowmap.h
+	"state.h"
+	"rendertarget.h"
 
