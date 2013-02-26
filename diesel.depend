@@ -125,7 +125,7 @@
 	<GL3/gl3w.h>
 	"array.h"
 
-1361489430 c:\devprojects\gitdiesel\silkworm\array.h
+1361876972 c:\devprojects\gitdiesel\silkworm\array.h
 	"resource.h"
 	"state.h"
 
@@ -206,7 +206,7 @@
 	"xml.h"
 	"log.h"
 
-1361820865 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
+1361882136 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
 	<GL3/gl3w.h>
 	<list>
 	"log.h"
@@ -220,6 +220,7 @@
 	"environment.h"
 	"entity.h"
 	"sky.h"
+	"post.h"
 
 1361491155 c:\devprojects\gitdiesel\silkworm\text.h
 
@@ -277,5 +278,14 @@
 1361820248 c:\devprojects\gitdiesel\silkworm\sky.h
 	"array.h"
 	"collada.h"
+	"image.h"
+
+1361881512 source:c:\devprojects\gitdiesel\silkworm\post.cpp
+	"file.h"
+	"post.h"
+
+1361881512 c:\devprojects\gitdiesel\silkworm\post.h
+	"state.h"
+	"array.h"
 	"image.h"
 

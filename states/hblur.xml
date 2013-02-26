@@ -1,0 +1,67 @@
+<?xml version="1.0" ?>
+<state>
+
+	<shader type="vertex">
+
+		#version 150
+		
+		uniform mat4 projection;
+		uniform mat4 modelview;
+		
+		in vec4 position;
+		
+		out vec2 tc;
+		
+		void main() {
+			gl_Position = position;
+		}
+			
+	</shader>
+	
+	<shader type="fragment">
+	
+		#version 330
+		
+		uniform sampler2D tex;
+		
+		in vec2 tc;
+		out vec4 frag;
+		
+		uniform float offset[4] = float[]( 0.5*4.0, 1.5*4.0, 2.5*4.0, 3.5*4.0 );
+		uniform float weight[4] = float[]( 0.2, 0.15, 0.1, 0.05 );
+		
+		uniform float contrast = 2.0;
+		
+		uniform vec2 invtargetsize;
+		uniform vec2 invsourcesize;
+	 
+		void main(void)
+		{			
+			frag = (texture2D( tex, vec2(gl_FragCoord)*invtargetsize+vec2(offset[0], 0.0)*invsourcesize )-0.0) * weight[0];
+			frag += (texture2D( tex, vec2(gl_FragCoord)*invtargetsize-vec2(offset[0], 0.0)*invsourcesize )-0.0) * weight[0];
+
+			frag += (texture2D( tex, vec2(gl_FragCoord)*invtargetsize+vec2(offset[1], 0.0)*invsourcesize )-0.0) * weight[1];
+			frag += (texture2D( tex, vec2(gl_FragCoord)*invtargetsize-vec2(offset[1], 0.0)*invsourcesize )-0.0) * weight[1];
+			
+			frag += (texture2D( tex, vec2(gl_FragCoord)*invtargetsize+vec2(offset[2], 0.0)*invsourcesize )-0.0) * weight[2];
+			frag += (texture2D( tex, vec2(gl_FragCoord)*invtargetsize-vec2(offset[2], 0.0)*invsourcesize )-0.0) * weight[2];
+
+			frag += (texture2D( tex, vec2(gl_FragCoord)*invtargetsize+vec2(offset[3], 0.0)*invsourcesize )-0.0) * weight[3];
+			frag += (texture2D( tex, vec2(gl_FragCoord)*invtargetsize-vec2(offset[3], 0.0)*invsourcesize )-0.0) * weight[3];
+			
+			frag *= contrast;
+		}
+
+
+		
+	</shader>
+	
+	<flag name="blend" />
+	
+	<symbol name="position" length="4" />
+	
+	<uniform name="invtargetsize" />
+	<uniform name="invsourcesize" />
+
+	
+</state>

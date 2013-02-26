@@ -43,6 +43,8 @@
 		<Unit filename="collada.h" />
 		<Unit filename="druidentity.cpp" />
 		<Unit filename="entity.h" />
+		<Unit filename="environment.cpp" />
+		<Unit filename="environment.h" />
 		<Unit filename="file.h" />
 		<Unit filename="gamepad.cpp" />
 		<Unit filename="gamepad.h" />
@@ -56,8 +58,12 @@
 		<Unit filename="matrix.h" />
 		<Unit filename="osabs.cpp" />
 		<Unit filename="osabs.h" />
+		<Unit filename="post.cpp" />
+		<Unit filename="post.h" />
 		<Unit filename="project.h" />
 		<Unit filename="resource.h" />
+		<Unit filename="sky.cpp" />
+		<Unit filename="sky.h" />
 		<Unit filename="standardphysicsentity.cpp" />
 		<Unit filename="state.cpp" />
 		<Unit filename="state.h" />

@@ -17,6 +17,7 @@
 #include "environment.h"
 #include "entity.h"
 #include "sky.h"
+#include "post.h"
 
 
 int windowwidth=1024,windowheight=768;
@@ -223,6 +224,51 @@ void initgame(TilesetMap &tileset)
 }
 
 
+void renderscene(Matrix &cameraMatrix, Matrix &projectionMatrix, Sky *sky, Collada *kathy, State *kathystate, Environment *env)
+{
+    Matrix modelviewMatrix;
+
+    // render background
+
+    glDisable(GL_CULL_FACE);
+
+    Matrix skyMatrix=cameraMatrix*Matrix::scale(Vector(-300.0f,-400.0f,-300.0f))*Matrix::rotation(0, PI*1.5f);
+    sky->draw(projectionMatrix,skyMatrix);
+
+    glEnable(GL_CULL_FACE);
+
+
+    modelviewMatrix = cameraMatrix * Matrix::translation(testdruid.pos+Vector(-1.0f,-0.9f-0.2f+testdruid.aniControl.positionoffset,-1.0f))
+                     /* * Matrix::scale((testdruid.bbb-testdruid.bba)*0.5f) */
+                    * Matrix::rotation(1, testdruid.aniControl.rotation)
+                    * Matrix::rotation(0, PI*1.5f);
+
+
+    // display the test animation
+
+    Matrix testMatrices[20];
+
+    glCullFace(GL_FRONT);
+
+    kathy->armature->animate(testdruid.aniControl.lastframe,testdruid.aniControl.frame,testdruid.aniControl.ip,testMatrices);
+
+    kathystate->set();
+
+    kathystate->uniformMatrix("projection",projectionMatrix);
+    kathystate->uniformMatrix("modelview",modelviewMatrix* Matrix::scale(Vector(0.07f,0.07f,0.07f)) ); // the model is much to large
+    kathystate->uniformMatrix("bonematrix",testMatrices,20);
+
+    kathy->geometries["Cube.004"].meshes[0].array.draw();
+
+
+    // display the level
+
+    glCullFace(GL_BACK);
+
+    env->render(projectionMatrix,cameraMatrix,1);
+}
+
+
 int renderloop()
 {
     static int quit = false;
@@ -298,6 +344,12 @@ int renderloop()
 
 	Sky *sky = new Sky();
 
+	// initialize post processing effects
+
+	Post *post[2];
+	post[0] = new Post(1024,"states/vblur.xml");
+	post[1] = new Post(256,"states/hblur.xml");
+
     // load level from level.txt
 
     loadlevel();
@@ -330,34 +382,6 @@ int renderloop()
         cameraRotationMatrix = Matrix::rotation(0,0.2f);
 
 
-        // a standard opengl setup
-
-
-        glHint(GL_POLYGON_SMOOTH_HINT,GL_NICEST);           // nicest shading
-        glEnable(GL_POLYGON_SMOOTH);                        // turn of flat-shading
-
-        glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);   // standard blending
-
-        glDepthMask(1);                                     // depth write on
-
-        glClearColor(0.0f,0.0f,0.0f,1.0f);                // r,g,b,a for screen clear
-        glClearDepth(1.0f);                                 // z for screen clear
-
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);   // clear screen
-
-        glViewport(0,0,windowwidth,windowheight);
-
-
-        // render background
-
-        glDisable(GL_CULL_FACE);
-
-      	Matrix skyMatrix=cameraMatrix*Matrix::scale(Vector(-300.0f,-400.0f,-300.0f))*Matrix::rotation(0, PI*1.5f);
-        sky->draw(projectionMatrix,skyMatrix);
-
-        glEnable(GL_CULL_FACE);
-
-
         // query the gamepad and mix data with keyboard input
 
         gamepad gg;
@@ -384,40 +408,55 @@ int renderloop()
 
 
 
-        modelviewMatrix = cameraMatrix * Matrix::translation(testdruid.pos+Vector(-1.0f,-0.9f-0.2f+testdruid.aniControl.positionoffset,-1.0f))
-                         /* * Matrix::scale((testdruid.bbb-testdruid.bba)*0.5f) */
-                        * Matrix::rotation(1, testdruid.aniControl.rotation)
-                        * Matrix::rotation(0, PI*1.5f);
 
 
-        // display the test animation
-
-        Matrix testMatrices[20];
-
-        glCullFace(GL_FRONT);
-
-        kathy->armature->animate(testdruid.aniControl.lastframe,testdruid.aniControl.frame,testdruid.aniControl.ip,testMatrices);
-
-        kathystate->set();
-
-        kathystate->uniformMatrix("projection",projectionMatrix);
-        kathystate->uniformMatrix("modelview",modelviewMatrix* Matrix::scale(Vector(0.07f,0.07f,0.07f)) ); // the model is much to large
-        kathystate->uniformMatrix("bonematrix",testMatrices,20);
-
-        kathy->geometries["Cube.004"].meshes[0].array.draw();
+        // a standard opengl setup
 
 
-        // display the level
+        glHint(GL_POLYGON_SMOOTH_HINT,GL_NICEST);           // nicest shading
+        glEnable(GL_POLYGON_SMOOTH);                        // turn of flat-shading
+        glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);   // standard blending
 
-        glCullFace(GL_BACK);
 
-        env->render(projectionMatrix,cameraMatrix,1);
+
+
+        post[0]->begin();
+
+        glClearDepth(1.0f);                                 // z for screen clear
+        glDepthMask(1);                                     // depth write on
+        glClear(GL_DEPTH_BUFFER_BIT);                       // clear screen
+
+        renderscene(cameraMatrix,projectionMatrix,sky,kathy,kathystate,env);
+
+        post[0]->end();
+
+        post[1]->begin();
+
+
+        post[0]->draw(256,256,1024,1024);
+        post[1]->end();
+
+        glViewport(0,0,windowwidth,windowheight);
+
+        glClearDepth(1.0f);                                 // z for screen clear
+        glDepthMask(1);                                     // depth write on
+        glClear(GL_DEPTH_BUFFER_BIT);                       // clear screen
+
+
+        renderscene(cameraMatrix,projectionMatrix,sky,kathy,kathystate,env);
+
+
+        glBlendFunc(GL_ONE,GL_ONE);
+        post[1]->draw(windowwidth,windowheight,256,256);
 
 
         Text::update();
 
         frame_hook();
     }
+
+    delete post[0];
+    delete post[1];
 
     delete sky;
 

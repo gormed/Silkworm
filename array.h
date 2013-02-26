@@ -46,6 +46,8 @@ class Array : Resource
 
     Array();
 
+    void create(State *_state, int _elements, float *_data) { usestate=_state;elements=_elements;data=_data; }
+
     void link ();
     void unlink ();
 
