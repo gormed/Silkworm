@@ -182,18 +182,21 @@
 1361735061 c:\devprojects\gitdiesel\silkworm\image.h
 	"resource.h"
 
-1361489430 source:c:\devprojects\gitdiesel\silkworm\log.cpp
+1361914603 source:c:\devprojects\gitdiesel\silkworm\log.cpp
 	<stdio.h>
 	<string.h>
+	"project.h"
 	"log.h"
 
-1361557703 source:c:\devprojects\gitdiesel\silkworm\osabs.cpp
+1361914180 source:c:\devprojects\gitdiesel\silkworm\osabs.cpp
 	<GL3/gl3w.h>
+	<sstream>
 	"project.h"
 	"osabs.h"
 	"log.h"
+	"config.h"
 
-1361376730 c:\devprojects\gitdiesel\silkworm\project.h
+1361912912 c:\devprojects\gitdiesel\silkworm\project.h
 
 1361557721 c:\devprojects\gitdiesel\silkworm\osabs.h
 
@@ -206,10 +209,11 @@
 	"xml.h"
 	"log.h"
 
-1361906030 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
+1361918376 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
 	<GL3/gl3w.h>
 	<list>
 	"log.h"
+	"config.h"
 	"osabs.h"
 	"gamepad.h"
 	"text.h"
@@ -232,7 +236,7 @@
 	<math.h>
 	"vector.h"
 
-1361629948 c:\devprojects\gitdiesel\silkworm\entity.h
+1361916634 c:\devprojects\gitdiesel\silkworm\entity.h
 	"vector.h"
 
 1361492327 source:c:\devprojects\gitdiesel\silkworm\text.cpp
@@ -244,7 +248,7 @@
 1361547217 source:c:\devprojects\gitdiesel\silkworm\xml.cpp
 	"xml.h"
 
-1361905347 source:c:\devprojects\gitdiesel\silkworm\druidentity.cpp
+1361918082 source:c:\devprojects\gitdiesel\silkworm\druidentity.cpp
 	"entity.h"
 
 1361640736 source:c:\devprojects\gitdiesel\silkworm\standardphysicsentity.cpp
@@ -259,7 +263,7 @@
 1361628932 c:\devprojects\gitdiesel\silkworm\armature.h
 	"log.h"
 
-1361904238 source:c:\devprojects\gitdiesel\silkworm\environment.cpp
+1361907618 source:c:\devprojects\gitdiesel\silkworm\environment.cpp
 	<GL3/gl3w.h>
 	<stdio.h>
 	"file.h"
@@ -304,4 +308,7 @@
 1361903048 c:\devprojects\gitdiesel\silkworm\shadowmap.h
 	"state.h"
 	"rendertarget.h"
+
+1361914175 c:\devprojects\gitdiesel\silkworm\config.h
+	"xml.h"
 

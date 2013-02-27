@@ -11,10 +11,12 @@
 */
 
 #include <GL3/gl3w.h>
+#include <sstream>
 
 #include "project.h"
 #include "osabs.h"
 #include "log.h"
+#include "config.h"
 
 
 // window procedure
@@ -119,38 +121,48 @@ int create_context()
 
 	memset(&dm,0,sizeof(DEVMODE));
 	dm.dmSize       = sizeof(DEVMODE);
-	dm.dmPelsWidth  = WINDOW_WIDTH;
-	dm.dmPelsHeight = WINDOW_HEIGHT;
+
+	std::stringstream windowwidthStream (Config::value("windowwidth")); windowwidthStream >> dm.dmPelsWidth;
+	std::stringstream windowheightStream (Config::value("windowheight")); windowheightStream >> dm.dmPelsHeight;
+
 	dm.dmBitsPerPel = 32;
 	dm.dmFields     = DM_BITSPERPEL|DM_PELSWIDTH|DM_PELSHEIGHT;
 
-	//if (DISP_CHANGE_SUCCESSFUL!=ChangeDisplaySettings(&dm,CDS_FULLSCREEN)) return 0;
+	if (Config::value("fullscreen")=="yes")
+	{
 
-    /*hwnd = CreateWindowEx(WS_EX_APPWINDOW,
+        if (DISP_CHANGE_SUCCESSFUL!=ChangeDisplaySettings(&dm,CDS_FULLSCREEN)) return 0;
+
+        hwnd = CreateWindowEx(WS_EX_APPWINDOW,
                           ENGINE,
                           PROJECT " " VERSION,
                           WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_POPUP,
                           CW_USEDEFAULT,
                           CW_USEDEFAULT,
-                          WINDOW_WIDTH,
-                           WINDOW_HEIGHT,
-                          NULL,
-                          NULL,
-                          hins,
-                          NULL);*/
-
-    hwnd = CreateWindowEx(0,
-                          ENGINE,
-                          PROJECT " " VERSION,
-                          WS_OVERLAPPEDWINDOW,
-                          CW_USEDEFAULT,
-                          CW_USEDEFAULT,
-                          WINDOW_WIDTH,
-                          WINDOW_HEIGHT,
+                          dm.dmPelsWidth,
+                          dm.dmPelsHeight,
                           NULL,
                           NULL,
                           hins,
                           NULL);
+	}
+	else
+	{
+
+        hwnd = CreateWindowEx(0,
+                              ENGINE,
+                              PROJECT " " VERSION,
+                              WS_OVERLAPPEDWINDOW,
+                              CW_USEDEFAULT,
+                              CW_USEDEFAULT,
+                              dm.dmPelsWidth,
+                              dm.dmPelsHeight,
+                              NULL,
+                              NULL,
+                              hins,
+                              NULL);
+
+	}
 
     ShowWindow(hwnd, true);
 

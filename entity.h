@@ -121,7 +121,7 @@ class DruidEntity : public StandardPhysicsEntity
         // todo: render the druid
     }
 
-    void control(int *keyStates, int *lastKeyStates);
+    void control(int *keyStates, int *lastKeyStates, Vector cameraDirection);
 };
 
 #endif

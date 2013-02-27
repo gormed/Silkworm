@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<config>
+
+	<fullscreen value="yes" />
+	<windowwidth value="1024" />
+	<windowheight value="768" />
+	
+</config>

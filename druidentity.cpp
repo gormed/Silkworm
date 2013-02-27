@@ -90,7 +90,7 @@ void DruidEntity::collisionResponse()
     }
 }
 
-void DruidEntity::control(int *keyStates, int *lastKeyStates)
+void DruidEntity::control(int *keyStates, int *lastKeyStates, Vector cameraDirection)
 {
     int i;
 
@@ -98,6 +98,12 @@ void DruidEntity::control(int *keyStates, int *lastKeyStates)
 
     intendedDirection=Vector(0.0f,0.0f,0.0f);
 
+
+    /*if (keyStates[0]) { intendedDirection.e[0]+=cameraDirection.e[2]; intendedDirection.e[2]-=cameraDirection.e[0]; }
+    if (keyStates[1]) { intendedDirection.e[0]-=cameraDirection.e[2]; intendedDirection.e[2]+=cameraDirection.e[0]; }
+
+    if (keyStates[2]) { intendedDirection.e[0]+=cameraDirection.e[0]; intendedDirection.e[2]+=cameraDirection.e[2]; }
+    if (keyStates[3]) { intendedDirection.e[0]-=cameraDirection.e[0]; intendedDirection.e[2]-=cameraDirection.e[2]; }*/
 
     if (keyStates[0]) intendedDirection.e[0]-=1.0f;
     if (keyStates[1]) intendedDirection.e[0]+=1.0f;

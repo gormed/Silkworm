@@ -13,19 +13,30 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "project.h"
 #include "log.h"
 
-std::ofstream glog;
-
-std::ofstream &Log::log() { return glog; }
+std::ofstream &Log::log() { static std::ofstream _log; return _log; }
 
 void Log::init()
 {
+    static const char* logHeader =
+
+        "<html><head><title>" ENGINE " debug log</title>"
+        "<style>html,body{font-family:Arial;font-size:11px;}</style>"
+        "<body><h1>" ENGINE " debug log</h1>\n";
+
     log().open("log.html");
+
+    log() << logHeader;
 }
 
 void Log::deinit()
 {
+    static const char*  logFooter = "</body></html>";
+
+    log() << logFooter;
+
     log().close();
 }
 
@@ -69,4 +80,6 @@ void Log::code(const char *text)
     }
 
     log() << "</pre>";
+
+    log().flush();
 }

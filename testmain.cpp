@@ -3,6 +3,7 @@
 #include <list>
 
 #include "log.h"
+#include "config.h"
 #include "osabs.h"
 #include "gamepad.h"
 #include "text.h"
@@ -287,6 +288,8 @@ int renderloop()
     int glmaj, glmin;
 
 
+    Config::read();
+
 
     if (!create_context()) return false;        // create the opengl rendering window
 
@@ -382,15 +385,45 @@ int renderloop()
     {
         static Vector smoothvel=Vector(0,0,0);
         smoothvel=smoothvel*0.8f+testdruid.vel*0.2f;
-        static Vector smoothpos=Vector(0,0,0);
-        smoothpos=smoothpos*0.8f+(testdruid.pos+smoothvel*10.0f)*0.2f;
+        float mx=5.0f+sqrtf(smoothvel.length2())*10.0f;
+        //static Vector smoothpos=Vector(0,0,0);
+        //smoothpos=smoothpos*0.8f+(testdruid.pos+smoothvel*10.0f)*0.2f;
+
+
+
+
+        Vector camTarget=(testdruid.pos+Vector(-1.0f,-1.0f,-1.0f));
+        static Vector camPosition=Vector(10,10,10);
+        camPosition=camPosition*0.8f+camTarget*0.2f;
+        camPosition.e[1]=camPosition.e[1]*0.9f+(camTarget.e[1]+0.2f*mx)*0.1f;
+        camPosition.e[0]=camPosition.e[0]*0.9f+camTarget.e[0]*0.1f;
+        Vector camDir=camTarget-camPosition;
+        if (camDir.length2()<mx*mx)
+        {
+            camDir.normalize();
+            camDir*=mx;
+            camPosition=camTarget-camDir;
+        }
+
+        float camhrot=atan2f(camDir.e[0],camDir.e[2])+PI;
+        float camvrot=atan2f(camDir.e[1]*camDir.e[1],camDir.e[0]*camDir.e[0]+camDir.e[2]*camDir.e[2]);
+
+        camDir.e[1]=0.0f;
+        camDir.normalize();
+
+
 
 
         // recalculate camera matrix
 
-        cameraMatrix = Matrix::translation(Vector(0.0f,0.0f,-3.0f-sqrtf(smoothvel.length2())*10.0f))
+        /*cameraMatrix = Matrix::translation(Vector(0.0f,0.0f,-3.0f-sqrtf(smoothvel.length2())*10.0f))
                      * Matrix::rotation(0,0.2f)
-                     * Matrix::translation(Vector(1.0f,-1.0f,0.0f)-smoothpos);
+                     * Matrix::translation(Vector(1.0f,-1.0f,0.0f)-smoothpos);*/
+
+        cameraMatrix =
+                       Matrix::rotation(0,camvrot)
+                     * Matrix::rotation(1,-camhrot)
+                     * Matrix::translation(Vector(0,-1.0f,0)-camPosition);
 
         cameraRotationMatrix = Matrix::rotation(0,0.2f);
 
@@ -415,7 +448,7 @@ int renderloop()
         // move the druid around
 
         testdruid.step();                                        // physics
-        testdruid.control(ggkeystatearray,lastkeystatearray);    // player control
+        testdruid.control(ggkeystatearray,lastkeystatearray,camDir);    // player control
 
         memcpy(lastkeystatearray,ggkeystatearray,16*4);
 
@@ -463,7 +496,7 @@ int renderloop()
 
         glClearDepth(1.0f);                                 // z for screen clear
         glDepthMask(1);                                     // depth write on
-        glClear(GL_DEPTH_BUFFER_BIT);                       // clear screen
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);                       // clear screen
 
         renderscene(cameraMatrix,projectionMatrix,sky,kathy,kathystate,env,shadowmview,shadowproj,shadowmap);
 
@@ -479,7 +512,7 @@ int renderloop()
 
         glClearDepth(1.0f);                                 // z for screen clear
         glDepthMask(1);                                     // depth write on
-        glClear(GL_DEPTH_BUFFER_BIT);                       // clear screen
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);                       // clear screen
 
 
         renderscene(cameraMatrix,projectionMatrix,sky,kathy,kathystate,env,shadowmview,shadowproj,shadowmap);
