@@ -188,7 +188,7 @@
 	"project.h"
 	"log.h"
 
-1361914180 source:c:\devprojects\gitdiesel\silkworm\osabs.cpp
+1362075254 source:c:\devprojects\gitdiesel\silkworm\osabs.cpp
 	<GL3/gl3w.h>
 	<sstream>
 	"project.h"
@@ -198,7 +198,7 @@
 
 1361912912 c:\devprojects\gitdiesel\silkworm\project.h
 
-1361557721 c:\devprojects\gitdiesel\silkworm\osabs.h
+1362075263 c:\devprojects\gitdiesel\silkworm\osabs.h
 
 1361576287 source:c:\devprojects\gitdiesel\silkworm\state.cpp
 	<GL3/gl3w.h>
@@ -209,7 +209,7 @@
 	"xml.h"
 	"log.h"
 
-1361918376 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
+1362075254 source:c:\devprojects\gitdiesel\silkworm\testmain.cpp
 	<GL3/gl3w.h>
 	<list>
 	"log.h"
@@ -226,6 +226,7 @@
 	"sky.h"
 	"post.h"
 	"shadowmap.h"
+	"sound.h"
 
 1361491155 c:\devprojects\gitdiesel\silkworm\text.h
 
@@ -263,7 +264,7 @@
 1361628932 c:\devprojects\gitdiesel\silkworm\armature.h
 	"log.h"
 
-1361907618 source:c:\devprojects\gitdiesel\silkworm\environment.cpp
+1361981606 source:c:\devprojects\gitdiesel\silkworm\environment.cpp
 	<GL3/gl3w.h>
 	<stdio.h>
 	"file.h"
@@ -311,4 +312,12 @@
 
 1361914175 c:\devprojects\gitdiesel\silkworm\config.h
 	"xml.h"
+
+1362074757 source:c:\devprojects\gitdiesel\silkworm\sound.cpp
+	<windows.h>
+	<stdio.h>
+	"log.h"
+	"sound.h"
+
+1362074816 c:\devprojects\gitdiesel\silkworm\sound.h
 

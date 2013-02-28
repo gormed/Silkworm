@@ -215,6 +215,12 @@ LRESULT CALLBACK windowproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {
+        case WM_MOVING:
+        case WM_SIZING:
+
+            idle();
+            break;
+
         case WM_CLOSE:
             PostQuitMessage(0);
             break;

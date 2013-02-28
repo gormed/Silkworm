@@ -66,6 +66,12 @@ Environment::Environment()
 	collada->read( colladafile );
 
 
+    File hookfile= File::read("models/hook.dae");
+    Collada *hook =new Collada();
+    hook->state=state;
+    hook->read(hookfile);
+
+
 }
 
 Environment::~Environment()

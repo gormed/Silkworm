@@ -13,6 +13,7 @@ int kill_context();
 // and must be implemented in the main program code
 
 int renderloop();
+void idle();
 int keydown(int keycode);
 int mousemove(int x, int y);
 void windowsize(int w, int h);

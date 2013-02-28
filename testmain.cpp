@@ -21,8 +21,12 @@
 #include "post.h"
 #include "shadowmap.h"
 
+#include "sound.h"
+
 
 int windowwidth=1024,windowheight=768;
+
+int musicMix=0;
 
 void windowsize(int w, int h)
 {
@@ -281,6 +285,14 @@ void renderscene(Matrix &cameraMatrix, Matrix &projectionMatrix, Sky *sky,
 }
 
 
+// this function gets called by obsas from time to time
+// if the call to system_hook is not returning for a longer time
+
+void idle()
+{
+    Sound::update(musicMix);
+}
+
 int renderloop()
 {
     static int quit = false;
@@ -305,6 +317,7 @@ int renderloop()
 
 
     // initialize the environment (level) graphics
+
 
     Environment *env = new Environment();
 
@@ -380,9 +393,18 @@ int renderloop()
 
     initgame(tileset);
 
+
+    // test music code
+
+    Sound::init(4096);
+    Sound::loadmusic("music/testtrack.wav");
+
+
     while (!quit)
     if (!system_hook(&quit))    // quit will become true if the os wants the application to be closed
     {
+        Sound::update(musicMix);
+
         static Vector smoothvel=Vector(0,0,0);
         smoothvel=smoothvel*0.8f+testdruid.vel*0.2f;
         float mx=5.0f+sqrtf(smoothvel.length2())*10.0f;
@@ -527,6 +549,8 @@ int renderloop()
         frame_hook();
     }
 
+    Sound::deinit();
+
     delete shadowmap;
 
     delete post[0];
@@ -587,6 +611,11 @@ int keydown(int keycode)
     if (keycode=='m'+('l'<<8)+('u'<<16)) mld=false;
     if (keycode=='m'+('r'<<8)+('d'<<16)) mrd=true;
     if (keycode=='m'+('r'<<8)+('u'<<16)) mrd=false;
+
+    if(keycode=='1'+('d'<<8)) musicMix=0;
+    if(keycode=='2'+('d'<<8)) musicMix=8192;
+    if(keycode=='3'+('d'<<8)) musicMix=8192*2;
+    if(keycode=='4'+('d'<<8)) musicMix=8192*3;
 
 
     return 1;
