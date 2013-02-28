@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <config>
 
-	<fullscreen value="no" />
+	<fullscreen value="yes" />
 	<windowwidth value="1024" />
 	<windowheight value="768" />
 	

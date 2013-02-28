@@ -19,6 +19,8 @@
 #define STEREOCHANNELS 2
 #define LEFTCHANNEL 0
 #define RIGHTCHANNEL 1
+#define FULLFADE 8192
+
 
 HWAVEOUT wo;
 WAVEFORMATEX wf;
@@ -176,16 +178,28 @@ void Sound::update(int targetMusicMix)
         }
         out*=128;*/
 
+
+        // slowly adapt to target music mix state
+
         if ((i&3)==0) { if (targetMusicMix>music.mix) music.mix++; else music.mix--; }
 
+        // cross-fade between two parts of the song
 
         for(j=0;j<MUSICPARTS;j++)
         {
-            int m =music.mix-j*8192;
-            if(m>8192) m=8192*2-m;
+            int m =music.mix-j*FULLFADE;
+            if(m>FULLFADE) m=FULLFADE*2-m;
             if(m<0) m=0;
-            outleft+=(int)music.data[ (music.position+music.length*j)*STEREOCHANNELS+LEFTCHANNEL]*m/8192;
-            outright+=(int)music.data[ (music.position+music.length*j)*STEREOCHANNELS+RIGHTCHANNEL]*m/8192;
+
+            // percieved loudness is dependant on signal energy; energy is magnitude squared
+            // because of this, when crossfading, we cannot interpolate between the two signals linearly
+
+            m=FULLFADE-m;
+            m=m*m/FULLFADE; // fixed-point multiplication, divide by FULLFADE
+            m=FULLFADE-m;
+
+            outleft+=(int)music.data[ (music.position+music.length*j)*STEREOCHANNELS+LEFTCHANNEL]*m/FULLFADE;
+            outright+=(int)music.data[ (music.position+music.length*j)*STEREOCHANNELS+RIGHTCHANNEL]*m/FULLFADE;
         }
 
         music.position++;
